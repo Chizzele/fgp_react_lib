@@ -1,18 +1,10 @@
 import React from "react";
-import "./fgpReactJsStyles.css";
+import "./styles/fgpReact-BaseStyles.css";
+import Navigation from './components/Navigation/Navigation'
 
-const TopNavigation = props => {
-    const {isOpen, topNavTitle } = props;
-    return (
-        <div className={"closedheader " + (isOpen === true ? "openheader" : "")}>
-            <div className="companyLogo">
-                {topNavTitle ? topNavTitle : "Compass"}
-            </div> 
-        </div>
-    )
-}
-
- 
+import Auth from './components/rude_auth/auth'
+   
 export { 
-    TopNavigation
+    Navigation,
+    Auth
   }
