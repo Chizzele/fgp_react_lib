@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './fgpReact-Navigation.css';
 import { TopNavigation } from './TopNavigation/TopNavigation';
 import { SideNavigation } from './SideNavigation/SideNavigation';
+import fgLogo from './fgp-logo.png';
 
 export class Navigation extends Component {
   constructor(props){
@@ -35,7 +36,8 @@ export class Navigation extends Component {
           currentPage={this.props.currentPage}
           isOpen={this.state.isOpen}
           handler={this.toggleNav}
-          sideNavLogoPath={this.props.sideNavLogoPath}
+          items={this.props.items}
+          sideNavLogoPath={this.props.sideNavLogoPath ? this.props.sideNavLogoPath : fgLogo}
         />    
 
       </header>

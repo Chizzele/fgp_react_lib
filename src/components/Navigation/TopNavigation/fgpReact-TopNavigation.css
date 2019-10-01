@@ -20,12 +20,13 @@
 .companyLogo{
     height: 100%;
     user-select: none;
-    width: 50%;
+    width: 100%;
     text-align: left;
     color: var(--fgReact_v0_boldBlack);
     float: left;
     line-height: 70px;
     padding-left: 70px;
+    overflow: hidden;
 }
 
 .fgpToggleDash:active{

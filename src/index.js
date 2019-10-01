@@ -6,11 +6,14 @@ import {SideNavigation} from  './components/Navigation/SideNavigation/SideNaviga
 import {SideNavigationItem} from  './components/Navigation/SideNavigation/SideNavigationItem/SideNavigationItem';
 import {Page} from './components/Page/Page';
 import {RouteWrap} from './components/RouteWrap/RouteWrap';
-import {ProtectedRoute} from './components/ProtectedRoute/ProtectedRoute';
 import {Auth} from './components/rude_auth/auth';
+import {Search} from './components/Search/Search';
+import {SearchRow} from './components/Search/searchrow/SearchRow';
+import {ResultTable} from './components/Search/resulttable/ResultTable';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 const iconList = Object
   .keys(Icons)
@@ -19,8 +22,6 @@ const iconList = Object
 
 library.add(...iconList)
 
-import {Test} from  './components/TestOuter/Test/Test';
-import {TestOuter} from './components/TestOuter/TestOuter';
 
 
    
@@ -29,12 +30,12 @@ export {
     TopNavigation,
     SideNavigation,
     SideNavigationItem,
-    Test,
-    ProtectedRoute,
     RouteWrap,
-    TestOuter,
     Icons,
     library,
     Page,
-    Auth
+    Auth,
+    Search,
+    SearchRow,
+    ResultTable
   }

@@ -12,6 +12,7 @@
 
 .fgReact_SideNavigationItem a{
     color: var(--fgReact_v0_boldBlack);
+    text-decoration: none !important;
 }
 
 .fgReact_SideNavigationItem a:hover{
@@ -45,6 +46,7 @@
 
 .fgReact_SideNavigationItemIconExtension{
     width: 130px;
+    display: inline-block;
     font-size: 12px;
     text-align: left;
     padding-left: 14px;

@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import './fgpReact-Page.css';
-import { Navigation } from '../Navigation/Navigation';
-import { BrowserRouter as Router, Route, Switch} from 'react-router-dom' ;
-import { ProtectedRoute } from '../ProtectedRoute/ProtectedRoute';
-
+// a simple container
 export class Page extends Component {
-  
+  constructor(props){
+    super(props);
+    this.state = {
+      
+    };
+  }
   render() {
     return (
-      <div className="fgReact_home">
-        <Navigation
-          history={this.props.history}
-          currentPage={this.props.pageName}
-          topNavTitle={this.props.topNavTitle}
-          sideNavLogoPath={this.props.sideNavLogoPath}
-        />
-      
+      <div className="fgReact_home">      
         {this.props.children}
       </div>
     )

@@ -20,20 +20,20 @@ export class SideNavigation extends Component {
           </div>
         </div>
         {
-          this.state.items ? 
-            this.state.items.map((item) => {
-              <SideNavigationItem
-                extensionShown={this.props.isOpen}
-                currentPage={this.props.currentPage}
-                linkTo={item.linkTo}
-                fontAwesomeIcon={item.fontAwesomeIcon}
-                fontAwesomeLib={item.fontAwesomeLib}
-                description={item.description}
+          this.props.items.map((item) => {
+            return (
+            <SideNavigationItem
+              key={item.key}
+              extensionShown={this.props.isOpen}
+              currentPage={this.props.currentPage}
+              linkTo={item.linkTo}
+              fontAwesomeIcon={item.fontAwesomeIcon}
+              fontAwesomeLib={item.fontAwesomeLib}
+              description={item.description}
 
-              />
-            })
-            :
-              null
+            />
+            )
+          })
         }
         {/* Always have sign out */}
         <SideNavigationItem
