@@ -37,7 +37,7 @@ export class Navigation extends Component {
           isOpen={this.state.isOpen}
           handler={this.toggleNav}
           items={this.props.items}
-          sideNavLogoPath={this.props.sideNavLogoPath ? this.props.sideNavLogoPath : fgLogo}
+          sideNavLogo={this.props.sideNavLogo ? this.props.sideNavLogo : fgLogo}
         />    
 
       </header>

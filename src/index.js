@@ -4,7 +4,8 @@ import {Navigation} from './components/Navigation/Navigation';
 import {TopNavigation} from  './components/Navigation/TopNavigation/TopNavigation';
 import {SideNavigation} from  './components/Navigation/SideNavigation/SideNavigation';
 import {SideNavigationItem} from  './components/Navigation/SideNavigation/SideNavigationItem/SideNavigationItem';
-import {Page} from './components/Page/Page';
+import {Page} from './components/Pages/Page';
+import {DevicePage} from './components/Pages/DevicePage';
 import {RouteWrap} from './components/RouteWrap/RouteWrap';
 import {Auth} from './components/rude_auth/auth';
 import {Search} from './components/Search/Search';
@@ -34,6 +35,7 @@ export {
     Icons,
     library,
     Page,
+    DevicePage,
     Auth,
     Search,
     SearchRow,

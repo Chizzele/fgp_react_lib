@@ -47,8 +47,11 @@ export class ResultTable extends Component {
         }
       });  
     }
-    
     return data;
+  }
+
+  HandlePagination(){
+      
   }
   
   
@@ -65,13 +68,11 @@ export class ResultTable extends Component {
             columns={this.buildColumns(this.props.columns)}
             minRows={this.props.defaultRowSize}
             pageSizeOptions={this.props.defaultRowSizeArray}
-            // getTdProps={(state, rowInfo, column, instance) => {
-            //   return{
-            //     onClick: e => 
-            //       // console.log("cell\n", "\nstate", state, "rowinfo\n", rowInfo,"\ncolumn", column,"\ninstance", instance,"\ne", e)
-            //       console.log(rowInfo, column)
-                  
-            //   }
+            // onPageChange={(pageIndex) => {
+            //   console.log("pageindex = ",pageIndex)
+            // }}
+            // onPageSizeChange={(pageSize,pageIndex) => {
+            //   console.log("pagesize = ", pageIndex, "pageindex = ", pageSize, state)
             // }}
         />
       </div>

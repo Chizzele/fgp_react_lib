@@ -16,7 +16,7 @@ export class SideNavigation extends Component {
     return (
       <div className={"fgReact-SideNavigation " + (this.props.isOpen === true ? "fgReact-SideNavigation-open " : "")}>
         <div className={"fgReact_compass2 "+ (this.props.isOpen === true ? "fgReact_compass-active2 " : "")} onClick={this.props.handler}>
-          <div className="fgReact_logo-thingsat" style={this.props.sideNavLogoPath ? ({backgroundImage :'url('+this.props.sideNavLogoPath+')'}) : {backgroundImage :'url(./fgp-logo.png)'}}>
+          <div className="fgReact_logo-thingsat" style={this.props.sideNavLogo ? ({backgroundImage :'url('+this.props.sideNavLogo+')'}) : {backgroundImage :'url(./fgp-logo.png)'}}>
           </div>
         </div>
         {
