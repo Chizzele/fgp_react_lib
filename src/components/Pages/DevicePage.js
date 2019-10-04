@@ -13,6 +13,7 @@ export class DevicePage extends Component {
       mapType: this.props.mapType ? this.props.mapType : "none",
       hasBreadCrumbs: this.props.hasBreadCrumbs ? this.props.hasBreadCrumbs : false,
       baseUrl: this.props.baseUrl,
+      deviceTypeTitleCasing : this.props.deviceTypeTitleCasing ? this.props.deviceTypeTitleCasing : "none",
 
       relationParentNames: this.props.relationParentNames ? this.props.relationParentNames : [],
       relationChildNames: this.props.relationChildNames ? this.props.relationChildNames : [],
@@ -76,7 +77,6 @@ export class DevicePage extends Component {
 
   fetchRelations(){
     let relationObj = {...this.state.relations};
-    console.log('yooo'), this.state.relationParentNames;
     this.state.relationParentNames.forEach( relation =>{
       axios.get(`${this.state.baseUrl}${this.state.deviceType}/${this.state.deviceName}/relation/${relation}?isParent=true`    
       ).then( response => {
@@ -109,7 +109,8 @@ export class DevicePage extends Component {
           isDataLinked: true,
           deviceName: this.state.deviceName,
           deviceType:  this.state.deviceType,
-          hasMap:  this.state.hasMap,
+          mapType:  this.state.mapType,
+          deviceTypeTitleCasing : this.state.deviceTypeTitleCasing,
           hasBreadCrumbs: this.state.hasBreadCrumbs,
           baseUrl:  this.state.baseUrl,
           relationParentNames:  this.state.relationParentNames,
@@ -127,7 +128,7 @@ export class DevicePage extends Component {
         { 
           this.state.hasDeviceExtensionLoaded === true && 
           this.state.hasDeviceRelationsLoaded === true ? (
-            <div>
+            <div className="col-12">
               {childrenWithProps}
             </div>            
           ) : 

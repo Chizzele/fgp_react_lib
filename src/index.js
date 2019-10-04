@@ -11,8 +11,20 @@ import {Auth} from './components/rude_auth/auth';
 import {Search} from './components/Search/Search';
 import {SearchRow} from './components/Search/searchrow/SearchRow';
 import {ResultTable} from './components/Search/resulttable/ResultTable';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {DeviceWidget} from './components/ExtensionWidgets/DeviceWidget'
+import {DeviceDataRow} from './components/ExtensionWidgets/DeviceDataRow'
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {BasicMapFGP} from './components/Map/BasicMapFGP/BasicMapFGP'
+import {MapPopup} from './components/Map/MapPopUp/MapPopup'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import Map from 'ol/Map.js';
+import View from 'ol/View.js';
+import 'ol/ol.css';
+import GeoJSON from 'ol/format/GeoJSON.js';
+import {defaults as defaultControls, OverviewMap} from 'ol/control.js';
+import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
+import {OSM, Vector as VectorSource} from 'ol/source.js';
+import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
 import * as Icons from '@fortawesome/free-solid-svg-icons';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
@@ -28,16 +40,33 @@ library.add(...iconList)
    
 export { 
     Navigation,
+    Map,
+    View,
+    GeoJSON,
+    defaultControls,
+    OverviewMap,
+    TileLayer,
+    VectorLayer,
+    CircleStyle,
+    Fill,
+    Stroke,
+    Style,
+    VectorSource,
     TopNavigation,
     SideNavigation,
     SideNavigationItem,
     RouteWrap,
     Icons,
+    DeviceWidget,
     library,
+    DeviceDataRow,
     Page,
     DevicePage,
+    BasicMapFGP,
     Auth,
     Search,
+    FontAwesomeIcon,
     SearchRow,
+    MapPopup,
     ResultTable
   }
