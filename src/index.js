@@ -16,6 +16,8 @@ import {DeviceDataRow} from './components/ExtensionWidgets/DeviceDataRow'
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {BasicMapFGP} from './components/Map/BasicMapFGP/BasicMapFGP'
 import {MapPopup} from './components/Map/MapPopUp/MapPopup'
+import {Breadcrumbs} from './components/Breadcrumbs/Breadcrumbs'
+import {Breadcrumb} from './components/Breadcrumbs/Breadcrumbs'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -59,6 +61,8 @@ export {
     Icons,
     DeviceWidget,
     library,
+    Breadcrumbs,
+    Breadcrumb,
     DeviceDataRow,
     Page,
     DevicePage,

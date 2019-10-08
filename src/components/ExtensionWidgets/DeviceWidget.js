@@ -4,6 +4,7 @@ import axios from "axios";
 import WidgetDataProcessor from './WidgetDataProcessor';
 import {DeviceDataRow} from './DeviceDataRow';
 import {BasicMapFGP} from '../Map/BasicMapFGP/BasicMapFGP';
+import {Breadcrumbs} from '../Breadcrumbs/Breadcrumbs';
 
 export class DeviceWidget extends Component {
   constructor(props){
@@ -57,7 +58,23 @@ export class DeviceWidget extends Component {
 
   render() {
     return (
-        <div className=" fgReact_componentContainer container fgReact_startTop ">
+        <div style={{"marginTop" : "30px"}}>
+            {
+                this.props.hasBreadCrumbs === true ? (
+                    <Breadcrumbs
+                        deviceName={this.props.deviceName}
+                        deviceType={this.props.deviceType}
+                        breadCrumbPath={this.props.breadCrumbPath}
+                        breadCrumbDeviceTypes={this.props.breadCrumbDeviceTypes}
+                        breadCrumbDeviceImages={this.props.breadCrumbDeviceImages}
+                        breadCrumbDeviceUrlPaths={this.props.breadCrumbDeviceUrlPaths}
+                        baseUrl={this.props.baseUrl}
+                    />
+                ) : (
+                    ""
+                )
+            }
+        <div className={" fgReact_componentContainer container fgReact_startTop " + (this.props.hasBreadCrumbs === true ? 'mt-0 ' : '') } >
             <div className="row col-12 fgReact_assetName alignLeft">
                 <div className={"col-12"} style={{"textAlign" : "left"}}>
                 {   
@@ -67,7 +84,7 @@ export class DeviceWidget extends Component {
                 <label className="fgReact_assetLabel">{this.props.deviceName}</label>
                 </div>
             {
-                this.props.mapType !== 'none' && this.props.extensions["location"] ? (
+                this.props.mapType !== 'none' && this.props.extensions["location"] && this.props.extensions["location"].lat !== 0 && this.props.extensions["location"].lng !== 0 ? (
                     <div className="col-12 row">
                         <div className="col-5">
                             <div className="row info_r">
@@ -99,6 +116,7 @@ export class DeviceWidget extends Component {
                         </div>  
                         <div className={"col-7"}>
                             <BasicMapFGP 
+                                mapProjection={this.props.mapProjection}
                                 featuresParent={{
                                     deviceName: this.props.extensions.location.deviceName,
                                     lat: this.props.extensions.location.lat,
@@ -147,6 +165,7 @@ export class DeviceWidget extends Component {
 
             }
             </div>
+        </div>
         </div>
     )
   }

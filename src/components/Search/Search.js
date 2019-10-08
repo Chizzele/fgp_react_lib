@@ -189,7 +189,7 @@ export class Search extends Component {
      
       let url =  this.props.baseApiUrl + this.props.searchConfig.reference + '/data/' +
       this.props.searchConfig.defaultQtyRecordsToRetrieve + "/" + 
-      this.props.searchConfig.defaultStartFrom + "/" +
+      this.props.searchConfig.startFrom + "/" +
       this.props.searchConfig.customer +
       this.props.searchConfig.searchDirection
   

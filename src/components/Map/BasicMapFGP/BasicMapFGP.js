@@ -123,7 +123,7 @@ export class BasicMapFGP extends Component {
                 'crs': {
                   'type': 'name',
                   'properties': {
-                    'name': 'EPSG:4326'
+                    'name': this.props.mapProjection
                   }
                 },
                 'coordinates': [
@@ -166,7 +166,7 @@ export class BasicMapFGP extends Component {
           'crs': {
             'type': 'name',
             'properties': {
-              'name': 'EPSG:4326'
+              'name': this.props.mapProjection
             }
           },
           'coordinates': [
@@ -222,7 +222,7 @@ export class BasicMapFGP extends Component {
             view: new View({
               center: layerCenter,
               zoom: 16,
-              projection: 'EPSG:4326'
+              projection: this.props.mapProjection
             })
           });
       }else{
@@ -240,12 +240,10 @@ export class BasicMapFGP extends Component {
           view: new View({
             center: layerCenter,
             zoom: 16,
-            projection: 'EPSG:4326'
+            projection: this.props.mapProjection
           })
         });
       }
-
-      console.log('map', map)
 
       if(hasChildrenIn === true){
           this.setState({
