@@ -245,17 +245,18 @@ export class Search extends Component {
   render() {
     return (
       <div className="fgReact_workingArea">
-        <div className="container fgReact_SearchPageTitle">{this.props.title}</div>
+        <div className={"fgReact_SearchPageTitle " + (this.props.isFluid === true ? " container-fluid " : " container ")}>{this.props.title}</div>
           {
             this.props.hideFilter === true ?            
             "" :
-            <div className="container fgReact_componentContainer">
+            <div className={"fgReact_componentContainer " + (this.props.isFluid === true ? " container-fluid " : " container ")}>
             <div className="col-12">
               <div>
                 {   
                    this.state.searchRows.map((row, i) => {
                     return (     
                       <SearchRow 
+                        isFluid={this.props.isFluid}
                         key={row.indexKey} 
                         indexKey={row.indexKey} 
                         addSearchCriteria={this.addSearchCriteria}
@@ -278,7 +279,7 @@ export class Search extends Component {
           </div>
           }
 
-        <div className="container fgReact_componentContainer">
+        <div className={"fgReact_componentContainer " + (this.props.isFluid === true ? " container-fluid " : " container ")}>
           { 
             this.state.hasLoaded ? (
             <ResultTable

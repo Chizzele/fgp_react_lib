@@ -10,8 +10,13 @@ export class DevicePage extends Component {
     this.state = {
       deviceName : window.location.href.split('/')[window.location.href.split('/').length-1],
       deviceType : this.props.deviceType,
+
+      isBefore1910 : this.props.isBefore1910 ? this.props.isBefore1910 : false,
+
       mapType: this.props.mapType ? this.props.mapType : "none",
       mapProjection: this.props.mapProjection ? this.props.mapProjection : "EPSG:4326",
+      mapParentColors: this.props.mapParentColors ? this.props.mapParentColors : {fillColor: "lightblue", borderColor : "blue"},
+      mapChildrenColors: this.props.mapChildrenColors ? this.props.mapChildrenColors : [{fillColor: "lightblue", borderColor : "blue"}, {fillColor: "lightyellow", borderColor : "yellow"}, {fillColor: "lightgreen", borderColor : "green"}, {fillColor: "lightslategray", borderColor : "purple"}, {fillColor: "lightsalmon", borderColor : "orange"}],
 
       breadCrumbPath: this.props.breadCrumbPath ? this.props.breadCrumbPath : null,
       hasBreadCrumbs: this.props.hasBreadCrumbs && this.props.breadCrumbPath ? this.props.hasBreadCrumbs : false,
@@ -24,6 +29,9 @@ export class DevicePage extends Component {
 
       relationParentNames: this.props.relationParentNames ? this.props.relationParentNames : [],
       relationChildNames: this.props.relationChildNames ? this.props.relationChildNames : [],
+      childrenWithLocationAndStyles: [],
+      childrenWithLocationAndStylesLoaded : false,
+
       relations: {parents:[], children:[]},
       hasDeviceRelationsLoaded : false,
 
@@ -69,6 +77,7 @@ export class DevicePage extends Component {
   }
 
   fetchExtensions(){
+    
     axios.post(`${this.state.baseUrl}${this.state.deviceType}/name/${this.state.deviceName}`,{
       "extensions" : this.state.extensionNames
     }).then( response => {
@@ -93,15 +102,96 @@ export class DevicePage extends Component {
         console.log("Here is your error, Dev -_-`", err)
       })
     });
-    this.state.relationChildNames.forEach( relation =>{
-      axios.get(`${this.state.baseUrl}${this.state.deviceType}/${this.state.deviceName}/relation/${relation}`    
+
+    for(var x = 0; x < this.state.relationChildNames.length; x++){
+      let iteratorZ = 0;
+      axios.get(`${this.state.baseUrl}${this.state.deviceType}/${this.state.deviceName}/relation/${this.state.relationChildNames[x]}`    
       ).then( response => {
-        response.data["relationName"] = relation
+        response.data["relationName"] = this.state.relationChildNames[iteratorZ]
+        let childType = response.data[0].type;
         relationObj.children.push(response.data);
+        let deviceNames = [];
+        response.data.forEach( child => {
+          deviceNames.push(child.name);
+        })
+        
+        if(this.state.isBefore1910 === true){
+          axios.post(
+            `${this.state.baseUrl}${childType}/location`,
+            {
+              "devices" : deviceNames,
+              "timestamp" : new Date().getTime()
+            }
+          ).then(response =>{
+            let copyOfChildren = [...this.state.childrenWithLocationAndStyles]
+            let childArr = [];
+            response.data.forEach( child => {
+              var temp = {
+                lat: child.lat,
+                lng: child.lng,
+                name : child.deviceName              
+              };
+              childArr.push(temp)
+              
+            })
+           
+            copyOfChildren.push({
+              deviceType : childType, 
+              children : childArr, 
+              style: this.state.mapChildrenColors[iteratorZ]})
+            this.setState({
+              childrenWithLocationAndStyles: copyOfChildren
+            })
+            iteratorZ ++;
+            if(iteratorZ === this.state.relationChildNames.length){
+              this.setState({
+                childrenWithLocationAndStylesLoaded : true
+              })
+            }
+          }).catch(err => {
+            console.log("Here is your error, Dev -_-` circa copy children loop pre 1910", err)
+          })
+        }else{  
+          axios.post(
+            `${this.state.baseUrl}${childType}`,
+            {
+              "devices" : deviceNames,
+              "extensions" : ["location"],
+              "timestamp" : new Date().getTime()
+            }
+          ).then(response =>{
+            let childArr = [];
+            response.data.forEach( child => {
+              var temp = {
+                lat: child.location.lat,
+                lng: child.location.lng,
+                name : child.device.name
+              };
+              childArr.push(temp)
+            })
+            let copyOfChildren = [...this.state.childrenWithLocation]
+            copyOfChildren.push({
+              deviceType : childType, 
+              children : childArr, 
+              style: this.state.mapChildrenColors[iteratorZ]})
+            this.setState({
+              childrenWithLocationAndStyles: copyOfChildren
+            })
+            iteratorZ ++;
+            if(iteratorZ === this.state.relationChildNames.length){
+              this.setState({
+                childrenWithLocationAndStylesLoaded : true
+              })
+            }
+          }).catch(err => {
+            console.log("Here is your error, Dev -_-`", err)
+          }) 
+        }
+        console.log("Here is your relations, Dev -_-`", response.data)
       }).catch(err => {
         console.log("Here is your error, Dev -_-`", err)
       })
-    });
+    }
     
     this.setState({
       relations : relationObj,
@@ -111,13 +201,19 @@ export class DevicePage extends Component {
 
   render() {
     const childrenWithProps = React.Children.map(this.props.children, child =>{
+      // passing props through to children by cloning the element if the `dataLink` attribute is set to true 
       if(child.props["dataLink"] === true){
         return( React.cloneElement(child, {
           isDataLinked: true,
+          isBefore1910 : this.state.isBefore1910,
+          isFluid : this.props.isFluid,
+          isOpen : this.props.isOpen,
           deviceName: this.state.deviceName,
           deviceType:  this.state.deviceType,
           mapType:  this.state.mapType,
           mapProjection : this.state.mapProjection,
+          mapParentColors : this.state.mapParentColors,
+          mapChildrenColors : this.state.mapChildrenColors,
           deviceTypeTitleCasing : this.state.deviceTypeTitleCasing,
           hasBreadCrumbs: this.state.hasBreadCrumbs,
           breadCrumbPath: this.state.breadCrumbPath,
@@ -128,6 +224,8 @@ export class DevicePage extends Component {
           relationParentNames:  this.state.relationParentNames,
           relationChildNames:  this.state.relationChildNames,
           relations:  this.state.relations,
+          childrenWithLocationAndStyles: this.state.childrenWithLocationAndStyles,
+          childrenWithLocationAndStylesLoaded: this.state.childrenWithLocationAndStylesLoaded,
           extensionNames:  this.state.extensionNames,
           extensions:  this.state.extensions,
         }))
@@ -136,16 +234,20 @@ export class DevicePage extends Component {
       }
     })
     return (
-      <div className="fgReact_home">      
+      <div className={"fgReact_home " + (this.props.isOpen === true ? " fgReact_home-ext " : "  ")}>      
         { 
           this.state.hasDeviceExtensionLoaded === true && 
-          this.state.hasDeviceRelationsLoaded === true ? (
+          this.state.hasDeviceRelationsLoaded === true &&
+          this.state.childrenWithLocationAndStylesLoaded === true ? (
+            // Rendering children with passed through props after extensions are loaded
             <div className="col-12">
               {childrenWithProps}
             </div>            
           ) : 
+            // loads a false navigation to simulate a working page 
             <div>
               <Navigation 
+                handler={this.props.handler}
                 topNavTitle={this.state.fauxNavTitle}
                 sideNavLogo={this.state.fauxNavLogo}
                 currentPage={""}

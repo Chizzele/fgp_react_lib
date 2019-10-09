@@ -1,6 +1,6 @@
 .fgReact_home {
     background: var(--fgReact_v0_dashboardGrey);
-    min-height: 100vh;
+    /* min-height: 100vh; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,6 +10,12 @@
     overflow-x: hidden;
     padding: 70px 0 0 70px;
   }
+.fgReact_home-ext {
+    width: calc(100vw - 140px);
+    position: relative;
+    left:140px;
+}
+  
   
   
   /* Mobile */

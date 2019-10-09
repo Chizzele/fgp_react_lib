@@ -54,31 +54,39 @@ export class BasicMapFGP extends Component {
             popupVisible:false,
             focusedFeature: null,
             focusedGroup: null,
-            hasChildren : this.props.featuresChildren ? this.props.featuresChildren : false,
+            hasChildren : this.props.featuresChildren ? true : false,
             id: Math.random().toString(36).substr(2, 11)
         };
-        // this.buildmap = this.buildmap.bind(this)
+        // this.buildMap = this.buildMap.bind(this)
     }
     
-    buildmap(){
+    buildMap(){
       var hasChildrenIn = this.state.hasChildren
+      function styleZoomer(type, radius, index){
+        if(type === "parent"){
+          return new CircleStyle({
+            radius: radius,
+            fill: new Fill({color: this.props.featuresParentStyles.fillColor}),
+            stroke: new Stroke({color: this.props.featuresParentStyles.borderColor, width: 1})
+          })
+        }else if(type === "child"){
+          return new CircleStyle({
+            radius: radius,
+            fill: new Fill({color: this.props.featuresChildren[index].style.fillColor}),
+            stroke: new Stroke({color: this.props.featuresChildren[index].style.borderColor, width: 1})
+          })
+        }
+      }
+      styleZoomer = styleZoomer.bind(this); // binding the state
+
       // parent style - blue inner, dark blue outer
-      var imageParent = new CircleStyle({
-        radius: 4,
-        fill: new Fill({
-          color: this.props.featuresParentStyles.fillColor
-        }),
-        stroke: new Stroke({
-          color: this.props.featuresParentStyles.borderColor, 
-          width: this.props.featuresParentStyles.borderWidth
-        })
-      });
+      var imageParent = styleZoomer("parent", 4)
       var stylesParent = {
         'Point': new Style({
           image: imageParent
         })
       };
-
+      
       var styleFunctionParent = function(feature) {
         return stylesParent[feature.getGeometry().getType()];
       };      
@@ -87,34 +95,29 @@ export class BasicMapFGP extends Component {
       let points = [];
 
 
-      // setting the style, labels and location for the children which are passe through props
+      // setting the style, labels and location for the children which are passed through props
       if(hasChildrenIn === true){
-          // child style - pink inner, red outer
-          var image = new CircleStyle({
-            radius: 4,
-            fill: new Fill({
-              color: this.props.featuresChildrenStyles.fillColor
-            }),
-            stroke: new Stroke({
-              color: this.props.featuresChildrenStyles.borderColor, 
-              width: this.props.featuresChildrenStyles.borderWidth
-            })
-          });
+        console.log("have children", this.props.featuresChildren)
+        var vectorLayerChildrenArr=[];
+        var geojsonObjectChildren = {
+          'type': 'FeatureCollection',
+          'features': [ ]
+        };  
+
+        //iterating through the types of children
+        for(var x = 0; x < this.props.featuresChildren.length; x++ ){
+          // creating styles of the children
+          var image = styleZoomer("child", 4, x)
           var styles = {
             'Point': new Style({
               image: image
             })
           };
           var styleFunctionChildren = function(feature) {
-            
             return styles[feature.getGeometry().getType()];
           };
-          var geojsonObjectChildren = {
-            'type': 'FeatureCollection',
-            'features': [ ]
-          };
-
-          this.props.featuresChildren.forEach( feature => {
+          this.props.featuresChildren[x].children.forEach( child =>{
+            // console.log(child)
             let featureObj = {
               'type' : "Feature",
               'id': '_' + Math.random().toString(36).substr(2, 11),
@@ -127,21 +130,24 @@ export class BasicMapFGP extends Component {
                   }
                 },
                 'coordinates': [
-                  feature.lng,
-                  feature.lat
+                  child.lng,
+                  child.lat
                 ]
               },
               "geometry_name": "geom",
               "properties": {
-                "lat":  feature.lat,
-                "lng": feature.lng,
-                "type": this.props.featuresChildrenStyles.label,
+                "lat":  child.lat,
+                "lng": child.lng,
+                "type": this.props.featuresChildren[x].deviceType,
                 "id": '_' + Math.random().toString(36).substr(2, 11),
-                "name": feature.deviceName,
+                "name": child.name,
               }
             }
-            points.push([feature.lng, feature.lat])
-            geojsonObjectChildren.features.push(featureObj)
+            if(isNaN(child.lat) === false && isNaN(child.lng) === false &&
+                 child.lat !== 0 && child.lng !== 0){
+                  points.push([child.lng, child.lat])
+                  geojsonObjectChildren.features.push(featureObj)
+            }
           })
           var vectorSourceChildren = new VectorSource({
             features: (new GeoJSON()).readFeatures(geojsonObjectChildren)
@@ -150,6 +156,8 @@ export class BasicMapFGP extends Component {
             source: vectorSourceChildren,
             style: styleFunctionChildren
           });
+          vectorLayerChildrenArr.push(vectorLayerChildren)
+        }
       }
       
       var geojsonObjectParent = {
@@ -183,9 +191,11 @@ export class BasicMapFGP extends Component {
           "name": this.props.featuresParent.deviceName,
         }
       }
-      points.push([this.props.featuresParent.lng, this.props.featuresParent.lat])
-      geojsonObjectParent.features.push(featureObjParent)
-      
+      if(isNaN(this.props.featuresParent.lng) === false && isNaN(this.props.featuresParent.lat === false) &&
+         this.props.featuresParent.lng !== 0 && this.props.featuresParent.lat !== 0){
+           points.push([this.props.featuresParent.lng, this.props.featuresParent.lat])
+           geojsonObjectParent.features.push(featureObjParent)
+      }
       // creates a vector source
 
 
@@ -207,17 +217,14 @@ export class BasicMapFGP extends Component {
       // get center
       var layerCenter = getCentroid(points);
       if(hasChildrenIn === true){
+        // var totalLayers = [...vectorLayerChildrenArr];
+        // totalLayers.push()
+        // totalLayers.push(vectorLayerParent)
           var map = new Map({
             controls: defaultControls().extend([
               new OverviewMap()
             ]),
-            layers: [
-              new TileLayer({
-                source: new OSM()
-              }),
-              vectorLayerChildren,
-              vectorLayerParent
-            ],
+            layers: [new TileLayer({source: new OSM()})],
             target: this.state.id,
             view: new View({
               center: layerCenter,
@@ -244,11 +251,15 @@ export class BasicMapFGP extends Component {
           })
         });
       }
-
+      vectorLayerChildrenArr.forEach( layer => {
+        map.addLayer(layer)
+      })
+      map.addLayer(vectorLayerParent)
+      
       if(hasChildrenIn === true){
           this.setState({
             map:map,
-            featuresLayerChildren:vectorLayerChildren,
+            featuresLayerChildren:vectorLayerChildrenArr,
             featuresLayerParent:vectorLayerParent
           })
       }else{
@@ -257,6 +268,8 @@ export class BasicMapFGP extends Component {
           featuresLayerParent:vectorLayerParent
         })
       }
+
+      // map.add
       // binding the hover event (popup dialogue)
       map.on('pointermove', this.handleMapHover.bind(this));     
       // changing the size of the features on the map with zoom level 
@@ -274,34 +287,23 @@ export class BasicMapFGP extends Component {
         }else{
           radius = 1;
         }
-        var newStyle = new Style({
-            image: new CircleStyle({
-            radius: radius,
-            fill: new Fill({color: 'pink'}),
-            stroke: new Stroke({color: 'red', width: 1})
-          })
-        })
-        var newStyle2 = new Style({
-            image: new CircleStyle({
-            radius: radius,
-            fill: new Fill({color: 'lightblue'}),
-            stroke: new Stroke({color: 'blue', width: 1})
-          })
-        })
+        var stylesParent = new Style({image: styleZoomer("parent", radius)});
+        vectorLayerParent.setStyle(stylesParent);
+
+        // var parentScaleStyle = imageParent
+
         if(hasChildrenIn === true){
-          // if(this.props.featuresChildren.length > 0){
-            vectorLayerChildren.setStyle(newStyle);
-          // }
+          for(var x = 0; x < vectorLayerChildrenArr.length; x ++){
+            var stylesChild = new Style({image: styleZoomer("child", radius, x)});
+            vectorLayerChildrenArr[x].setStyle(stylesChild)
+          }
         }
-        vectorLayerParent.setStyle(newStyle2);
       });     
-      // map.on('click', this.handleMapClick.bind(this));      
-      // making sure its the right dimension
       map.updateSize() 
     }
 
     componentDidMount(){
-      this.buildmap()
+      this.buildMap()
       
     }
 
@@ -319,8 +321,6 @@ export class BasicMapFGP extends Component {
       
     }
 
-
-    
 
     handleMapClick(event){
       this.state.map.updateSize()

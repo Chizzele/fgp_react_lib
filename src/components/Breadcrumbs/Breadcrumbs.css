@@ -15,12 +15,13 @@
 }
 
 a.breadcrumbs{
-    color: #337ab7;
-    text-decoration: none;
+    color: #337ab7 ;
+    text-decoration: none !important;
+    cursor: pointer;
 }
 
 a.breadcrumbs:hover{
-    color: #23527c;
+    color: #23527c !important;
 }
 
 .fg_relationBreadcrumb ul {
@@ -37,6 +38,12 @@ a.breadcrumbs:hover{
     background-color:transparent !important;
     border-radius: 0 !important;
     list-style: none !important;
+    color: #337ab7 ;
+    text-decoration: none !important;
+}
+
+.breadcrumb:hover{
+    color: #23527c !important;
 }
 
 .breadcrumb li:after

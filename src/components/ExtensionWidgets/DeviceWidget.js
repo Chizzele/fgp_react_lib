@@ -62,6 +62,7 @@ export class DeviceWidget extends Component {
             {
                 this.props.hasBreadCrumbs === true ? (
                     <Breadcrumbs
+                        isFluid={this.props.isFluid}
                         deviceName={this.props.deviceName}
                         deviceType={this.props.deviceType}
                         breadCrumbPath={this.props.breadCrumbPath}
@@ -74,7 +75,7 @@ export class DeviceWidget extends Component {
                     ""
                 )
             }
-        <div className={" fgReact_componentContainer container fgReact_startTop " + (this.props.hasBreadCrumbs === true ? 'mt-0 ' : '') } >
+        <div className={" fgReact_componentContainer fgReact_startTop " + (this.props.hasBreadCrumbs === true ? 'mt-0 ' : ' ') + (this.props.isFluid === true ? " container-fluid " : " container ")} >
             <div className="row col-12 fgReact_assetName alignLeft">
                 <div className={"col-12"} style={{"textAlign" : "left"}}>
                 {   
@@ -84,7 +85,7 @@ export class DeviceWidget extends Component {
                 <label className="fgReact_assetLabel">{this.props.deviceName}</label>
                 </div>
             {
-                this.props.mapType !== 'none' && this.props.extensions["location"] && this.props.extensions["location"].lat !== 0 && this.props.extensions["location"].lng !== 0 ? (
+                this.props.mapType !== 'none' ? (
                     <div className="col-12 row">
                         <div className="col-5">
                             <div className="row info_r">
@@ -113,23 +114,31 @@ export class DeviceWidget extends Component {
                                 }
                                 </ul>
                             </div>
-                        </div>  
-                        <div className={"col-7"}>
-                            <BasicMapFGP 
-                                mapProjection={this.props.mapProjection}
-                                featuresParent={{
-                                    deviceName: this.props.extensions.location.deviceName,
-                                    lat: this.props.extensions.location.lat,
-                                    lng: this.props.extensions.location.lng
-                                }}
-                                featuresParentStyles={{
-                                    label : this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing),
-                                    borderColor : "blue",
-                                    borderWidth : "1",
-                                    fillColor : "lightblue",
-                                }}
-                            />
-                        </div>
+                        </div> 
+                        { this.props.mapType === "basic" || this.props.mapType === "" ? (
+                            <div className={"col-7"}>
+                                <BasicMapFGP 
+                                    isBefore1910={this.props.isBefore1910}
+                                    mapProjection={this.props.mapProjection}
+                                    featuresParent={{
+                                        deviceName: this.props.deviceName,
+                                        lat: this.props.extensions["location"]? this.props.extensions.location.lat : null ,
+                                        lng: this.props.extensions["location"] ? this.props.extensions.location.lng : null
+                                    }}
+                                    featuresParentStyles={{
+                                        label : this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing),
+                                        borderColor : this.props.mapParentColors.borderColor,
+                                        borderWidth : "1",
+                                        fillColor : this.props.mapParentColors.fillColor,
+                                    }}
+                                    featuresChildren={this.props.childrenWithLocationAndStyles}
+                                    
+                                />
+                            </div> 
+                            ) : (
+                            ""
+                            )
+                        } 
                     </div>
 
                 ) : (

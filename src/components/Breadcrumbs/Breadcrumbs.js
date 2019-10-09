@@ -15,9 +15,14 @@ export class Breadcrumbs extends Component {
 
             deviceName: this.props.deviceName,
             deviceType: this.props.deviceType,
+            finalCrumbs :[],
             relationsArray : [],
             baseUrl: this.props.baseUrl,
-            crumbsLoaded : false
+            crumbsLoaded : false,
+            allCrumbsLoaded :false,
+
+            breadCrumbTimeout : false,
+            breadCrumbHide : false
         };        
         this.formRelations = this.formRelations.bind(this);
         this.buildBreadcrumbData = this.buildBreadcrumbData.bind(this);
@@ -89,19 +94,38 @@ export class Breadcrumbs extends Component {
                        key: `${response.data.name}_ki`
                     }
                 )
+                this.setState({
+                    crumbsLoaded : true,
+                    finalCrumbs : breadcrumbs
+                });
             }).catch(err => {
                 console.log("Here is your error, Dev -_-`", err)
             })
         }
         this.setState({
-            crumbsLoaded : true,
-            finalCrumbs : breadcrumbs
+            allCrumbsLoaded : true 
         });
     }
 
     render() {
+        window.setTimeout(()=>{
+            if(this.state.crumbsLoaded === false){
+                this.setState({
+                    breadCrumbTimeout: true
+                })
+            }
+            window.clearTimeout()
+        },10000)
+        window.setTimeout(()=>{
+            if(this.state.crumbsLoaded === false && this.state.breadCrumbTimeout === true){
+                this.setState({
+                    breadCrumbHide: true
+                })
+            }
+            window.clearTimeout()
+        },15000)
         return (
-            <div className={(this.state.crumbsLoaded === true ? "text-left "  : "text-center ") + "container breadcrumbs"}>
+            <div className={(this.state.crumbsLoaded === true ? "text-left "  : "text-center ") + " breadcrumbs " + (this.props.isFluid === true ? " container-fluid " : " container ") + (this.state.breadCrumbHide === true ? " d-none " : "  ")}>
             {
                 this.state.crumbsLoaded === true ? 
                     <ul className={"breadcrumb"}>
@@ -110,16 +134,24 @@ export class Breadcrumbs extends Component {
                                 return (
                                     <Breadcrumb
                                         key={crumb.key}
+                                        keyL={crumb.key}
                                         deviceName={crumb.deviceName}
                                         img={crumb.img}
                                         deviceType={crumb.deviceType}
                                         redirect={crumb.redirect}
+                                        allCrumbsLoaded={this.state.allCrumbsLoaded}
                                     />
                                 )
                             })  
                         }
-                    </ul> : 
-                    <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>
+                    </ul> 
+                    : this.state.breadCrumbTimeout === false ? (
+                        <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>
+                    ) : (
+                        "Hierarchy not found"
+                    )
+
+                    
             }
             </div>
         )

@@ -12,20 +12,21 @@ export class Navigation extends Component {
       currentPage:this.props.currentPage,
       isDashboard:this.props.isDashboard
     };
-    this.toggleNav = this.toggleNav.bind(this);
+    // this.toggleNav = this.toggleNav.bind(this);
+    console.log("navporops", this.props)
   }
 
-  toggleNav() {
-    this.setState(props => ({
-      isOpen: !props.isOpen
-    }));
-  }
+  // toggleNav() {
+  //   this.setState(props => ({
+  //     isOpen: !props.isOpen
+  //   }));
+  // }
 
   render() {
     return (
       <header>
         <TopNavigation
-          isOpen={this.state.isOpen}
+          isOpen={this.props.isOpen}
           isDashboard={this.props.isDashboard}
           topNavAction={this.props.topNavAction}
           topNavTitle={this.props.topNavTitle}
@@ -34,7 +35,7 @@ export class Navigation extends Component {
         <SideNavigation
           history={this.props.history}
           currentPage={this.props.currentPage}
-          isOpen={this.state.isOpen}
+          isOpen={this.props.isOpen}
           handler={this.toggleNav}
           items={this.props.items}
           sideNavLogo={this.props.sideNavLogo ? this.props.sideNavLogo : fgLogo}
