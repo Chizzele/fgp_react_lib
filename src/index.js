@@ -18,6 +18,8 @@ import {BasicMapFGP} from './components/Map/BasicMapFGP/BasicMapFGP'
 import {MapPopup} from './components/Map/MapPopUp/MapPopup'
 import {Breadcrumbs} from './components/Breadcrumbs/Breadcrumbs'
 import {Breadcrumb} from './components/Breadcrumbs/Breadcrumbs'
+import {ExternalLinkPage} from './components/Pages/ExternalLinkPage/ExternalLinkPage'
+import {ExternalLink} from './components/Pages/ExternalLinkPage/ExternalLink'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -72,5 +74,7 @@ export {
     FontAwesomeIcon,
     SearchRow,
     MapPopup,
+    ExternalLinkPage,
+    ExternalLink,
     ResultTable
   }

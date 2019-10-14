@@ -22,6 +22,7 @@ export class DeviceWidget extends Component {
   }
 
   caseString(string, caseType) {
+    console.log("STRING LOG FOR NAVEEN >>> ", string)
     let newString = new String();
     string.split("_").forEach( (word, index) =>{
         if(caseType === "camel"){
@@ -35,6 +36,11 @@ export class DeviceWidget extends Component {
         }
         index === string.split("_").length -1 ? null : newString += " "
     });
+    let temp = newString.split("%");
+    newString = new String();
+    temp.forEach( (word) => {
+        newString += word + " "
+    })
     return newString;
   }
 
@@ -60,6 +66,8 @@ export class DeviceWidget extends Component {
     return (
         <div style={{"marginTop" : "30px"}}>
             {
+                // If the props for breadcrumbs == true, then we display the crumbs at the top
+                // passed in the following props
                 this.props.hasBreadCrumbs === true ? (
                     <Breadcrumbs
                         isFluid={this.props.isFluid}
@@ -79,6 +87,7 @@ export class DeviceWidget extends Component {
             <div className="row col-12 fgReact_assetName alignLeft">
                 <div className={"col-12"} style={{"textAlign" : "left"}}>
                 {   
+                    // Formatting the Device type string for a title
                     this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing)
                 }   
                 :&nbsp;
@@ -115,14 +124,16 @@ export class DeviceWidget extends Component {
                                 </ul>
                             </div>
                         </div> 
-                        { this.props.mapType === "basic" || this.props.mapType === "" ? (
+                        
+                        {   //rendering the basic map
+                            this.props.mapType === "basic" || this.props.mapType === "" ? (
                             <div className={"col-7"}>
                                 <BasicMapFGP 
                                     isBefore1910={this.props.isBefore1910}
                                     mapProjection={this.props.mapProjection}
                                     featuresParent={{
                                         deviceName: this.props.deviceName,
-                                        lat: this.props.extensions["location"]? this.props.extensions.location.lat : null ,
+                                        lat: this.props.extensions["location"] ? this.props.extensions.location.lat : null ,
                                         lng: this.props.extensions["location"] ? this.props.extensions.location.lng : null
                                     }}
                                     featuresParentStyles={{

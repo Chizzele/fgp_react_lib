@@ -20,6 +20,7 @@ html, body {
     --fgReact_V0_paleGreen: #d2e9e8;
     --fgReact_V0_boldGreen: #89af34;
     --fgReact_V0_dangerRed: #dc3545;
+    --fgReact_V0_bcrmbGrey: #e6e6e6;
     --fgReact_V0_boldBlue: #217ec6;
     --fgReact_v0_atnYellow: #f4a142;
     --fgReact_V0_darkBlue: #173f4f;
@@ -166,6 +167,7 @@ html, body {
     padding-right: 26px;
     padding-top: 35px;
     padding-bottom: 35px;
+    margin-bottom: 12px;
   }
   
   .mtop-30{
@@ -182,4 +184,8 @@ html, body {
       background: red;
     }
   
+  }
+
+  .ls-none{
+    list-style: none;
   }

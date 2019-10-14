@@ -108,84 +108,94 @@ export class DevicePage extends Component {
       axios.get(`${this.state.baseUrl}${this.state.deviceType}/${this.state.deviceName}/relation/${this.state.relationChildNames[x]}`    
       ).then( response => {
         response.data["relationName"] = this.state.relationChildNames[iteratorZ]
-        let childType = response.data[0].type;
-        relationObj.children.push(response.data);
-        let deviceNames = [];
-        response.data.forEach( child => {
-          deviceNames.push(child.name);
-        })
-        
-        if(this.state.isBefore1910 === true){
-          axios.post(
-            `${this.state.baseUrl}${childType}/location`,
-            {
-              "devices" : deviceNames,
-              "timestamp" : new Date().getTime()
-            }
-          ).then(response =>{
-            let copyOfChildren = [...this.state.childrenWithLocationAndStyles]
-            let childArr = [];
-            response.data.forEach( child => {
-              var temp = {
-                lat: child.lat,
-                lng: child.lng,
-                name : child.deviceName              
-              };
-              childArr.push(temp)
-              
-            })
-           
-            copyOfChildren.push({
-              deviceType : childType, 
-              children : childArr, 
-              style: this.state.mapChildrenColors[iteratorZ]})
-            this.setState({
-              childrenWithLocationAndStyles: copyOfChildren
-            })
-            iteratorZ ++;
-            if(iteratorZ === this.state.relationChildNames.length){
-              this.setState({
-                childrenWithLocationAndStylesLoaded : true
-              })
-            }
-          }).catch(err => {
-            console.log("Here is your error, Dev -_-` circa copy children loop pre 1910", err)
+        if(response.data.length > 0){
+          let childType = response.data[0].type;
+          relationObj.children.push(response.data);
+          let deviceNames = [];
+          response.data.forEach( child => {
+            deviceNames.push(child.name);
           })
-        }else{  
-          axios.post(
-            `${this.state.baseUrl}${childType}`,
-            {
-              "devices" : deviceNames,
-              "extensions" : ["location"],
-              "timestamp" : new Date().getTime()
-            }
-          ).then(response =>{
-            let childArr = [];
-            response.data.forEach( child => {
-              var temp = {
-                lat: child.location.lat,
-                lng: child.location.lng,
-                name : child.device.name
-              };
-              childArr.push(temp)
-            })
-            let copyOfChildren = [...this.state.childrenWithLocation]
-            copyOfChildren.push({
-              deviceType : childType, 
-              children : childArr, 
-              style: this.state.mapChildrenColors[iteratorZ]})
-            this.setState({
-              childrenWithLocationAndStyles: copyOfChildren
-            })
-            iteratorZ ++;
-            if(iteratorZ === this.state.relationChildNames.length){
-              this.setState({
-                childrenWithLocationAndStylesLoaded : true
+          
+          if(this.state.isBefore1910 === true){
+            axios.post(
+              `${this.state.baseUrl}${childType}/location`,
+              {
+                "devices" : deviceNames,
+                "timestamp" : new Date().getTime()
+              }
+            ).then(response =>{
+              let copyOfChildren = [...this.state.childrenWithLocationAndStyles]
+              let childArr = [];
+              response.data.forEach( child => {
+                if(child === null ){
+  
+                }else{
+                  var temp = {
+                    lat: child["lat"] ? child.lat : null,
+                    lng: child["lng"] ? child.lng : null,
+                    name : child.deviceName              
+                  };
+                  childArr.push(temp)
+                }
               })
-            }
-          }).catch(err => {
-            console.log("Here is your error, Dev -_-`", err)
-          }) 
+             
+              copyOfChildren.push({
+                deviceType : childType, 
+                children : childArr, 
+                style: this.state.mapChildrenColors[iteratorZ]})
+              this.setState({
+                childrenWithLocationAndStyles: copyOfChildren
+              })
+              iteratorZ ++;
+              if(iteratorZ === this.state.relationChildNames.length){
+                this.setState({
+                  childrenWithLocationAndStylesLoaded : true
+                })
+              }
+            }).catch(err => {
+              console.log("Here is your error, Dev -_-` circa copy children loop pre 1910", err)
+            })
+          }else{  
+            axios.post(
+              `${this.state.baseUrl}${childType}`,
+              {
+                "devices" : deviceNames,
+                "extensions" : ["location"],
+                "timestamp" : new Date().getTime()
+              }
+            ).then(response =>{
+              let childArr = [];
+              response.data.forEach( child => {
+                var temp = {
+                  lat: child.location.lat,
+                  lng: child.location.lng,
+                  name : child.device.name
+                };
+                childArr.push(temp)
+              })
+              let copyOfChildren = [...this.state.childrenWithLocationAndStyles]
+              copyOfChildren.push({
+                deviceType : childType, 
+                children : childArr, 
+                style: this.state.mapChildrenColors[iteratorZ]})
+              this.setState({
+                childrenWithLocationAndStyles: copyOfChildren
+              })
+              iteratorZ ++;
+              if(iteratorZ === this.state.relationChildNames.length){
+                this.setState({
+                  childrenWithLocationAndStylesLoaded : true
+                })
+              }
+            }).catch(err => {
+              console.log("Here is your error, Dev -_-`", err)
+            }) 
+          }
+        }else{
+          console.log('we out baby')
+          this.setState({
+            childrenWithLocationAndStylesLoaded : true
+          });
         }
         console.log("Here is your relations, Dev -_-`", response.data)
       }).catch(err => {

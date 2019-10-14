@@ -22,6 +22,7 @@ a.breadcrumbs{
 
 a.breadcrumbs:hover{
     color: #23527c !important;
+    cursor: pointer;
 }
 
 .fg_relationBreadcrumb ul {
@@ -40,10 +41,12 @@ a.breadcrumbs:hover{
     list-style: none !important;
     color: #337ab7 ;
     text-decoration: none !important;
+    cursor: pointer;
 }
 
 .breadcrumb:hover{
     color: #23527c !important;
+    cursor: pointer;
 }
 
 .breadcrumb li:after

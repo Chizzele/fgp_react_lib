@@ -116,14 +116,14 @@ export class Breadcrumbs extends Component {
             }
             window.clearTimeout()
         },10000)
-        window.setTimeout(()=>{
-            if(this.state.crumbsLoaded === false && this.state.breadCrumbTimeout === true){
-                this.setState({
-                    breadCrumbHide: true
-                })
-            }
-            window.clearTimeout()
-        },15000)
+        // window.setTimeout(()=>{
+        //     if(this.state.crumbsLoaded === false && this.state.breadCrumbTimeout === true){
+        //         // this.setState({
+        //         //     breadCrumbHide: true
+        //         // })
+        //     }
+        //     window.clearTimeout()
+        // },15000)
         return (
             <div className={(this.state.crumbsLoaded === true ? "text-left "  : "text-center ") + " breadcrumbs " + (this.props.isFluid === true ? " container-fluid " : " container ") + (this.state.breadCrumbHide === true ? " d-none " : "  ")}>
             {
@@ -148,7 +148,7 @@ export class Breadcrumbs extends Component {
                     : this.state.breadCrumbTimeout === false ? (
                         <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>
                     ) : (
-                        "Hierarchy not found"
+                        "Parent relation hierarchy not found"
                     )
 
                     

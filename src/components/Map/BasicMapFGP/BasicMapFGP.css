@@ -23,3 +23,11 @@
 .ol-attribution{
     display: none !important;
 }
+.noMapData{
+    height: 300px;
+    line-height: 300px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: var(--fgReact_V0_bcrmbGrey);
+}
