@@ -24,6 +24,9 @@ export class ResultTable extends Component {
     return data;
   }
 
+
+
+
   buildColumns(data){
     // console.log(data)
     if(this.props.ignoreBuildCols){
@@ -32,17 +35,43 @@ export class ResultTable extends Component {
       data.forEach(element => {
         if(element["fgpRedirect"]){
           element["Cell"] = row => (
-            <NavLink to={element.fgpRedirect + row.value}>
-               {row.value}
-            </NavLink>
+              this.props.openInNewPage === true ? (
+                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${row.value}`}>
+                  {row.value}
+                </a>
+              ) : (
+                <NavLink to={element.fgpRedirect + row.value}>
+                   {row.value}
+                </NavLink>
+              )
           )
         }else if(element["fgpMutate"]){
           if(element.fgpMutate === "date"){
-            element["Cell"] = row => (
-              <Moment date={row.value} format={"lll"}>
-  
-              </Moment>
-            )
+            if(element["fgpMutateConfig"]){
+              element["Cell"] = row => (
+                <Moment date={row.value} format={element.fgpMutateConfig}>
+                </Moment>
+              )
+            }else{
+              element["Cell"] = row => (
+                <Moment date={row.value} format={"lll"}>
+                </Moment>
+              )
+            }
+          }else if(element.fgpMutate === "round"){
+            if(element["fgpMutateConfig"]){
+              element["Cell"] = row => (
+                <span>
+                  {Math.round((row.value * Math.pow(10, element.fgpMutateConfig))) / Math.pow(10, element.fgpMutateConfig)}
+                </span>
+              )
+            }else{
+              element["Cell"] = row => (
+                <span>
+                  {Math.round(row.value)}
+                </span>
+              )
+            }
           }
         }
       });  
@@ -56,6 +85,11 @@ export class ResultTable extends Component {
   
   
   render() {
+    const filterCaseInsensitive = ({ id, value }, row) =>
+      row[id] ? row[id].toLowerCase().includes(value.toLowerCase()) : true
+
+    console.log(this.buildData(this.props.data))
+    console.log(this.buildColumns(this.props.columns))
     return (
       <div className="ResultTable">
         <span className="ResultTable-title">{this.props.title}</span>
@@ -67,7 +101,9 @@ export class ResultTable extends Component {
             data={this.buildData(this.props.data)}
             columns={this.buildColumns(this.props.columns)}
             minRows={this.props.defaultRowSize}
+            defaultPageSize={this.props.defaultPageSize ? this.props.defaultPageSize : 25}
             pageSizeOptions={this.props.defaultRowSizeArray}
+            defaultFilterMethod={filterCaseInsensitive}
             // onPageChange={(pageIndex) => {
             //   console.log("pageindex = ",pageIndex)
             // }}

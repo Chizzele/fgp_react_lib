@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import "./styles/fgpReact-BaseStyles.css";
 import {Navigation} from './components/Navigation/Navigation';
 import {TopNavigation} from  './components/Navigation/TopNavigation/TopNavigation';
@@ -18,6 +18,9 @@ import {BasicMapFGP} from './components/Map/BasicMapFGP/BasicMapFGP'
 import {MapPopup} from './components/Map/MapPopUp/MapPopup'
 import {Breadcrumbs} from './components/Breadcrumbs/Breadcrumbs'
 import {Breadcrumb} from './components/Breadcrumbs/Breadcrumbs'
+import {FgTabs} from './components/TabWidgets/FgTabs/FgTabs';
+import {StandardGraph} from './components/Graphs/StandardGraph/StandardGraph';
+import {ChildExtensionList} from './components/TabWidgets/ChildExtensionList/ChildExtensionList';
 import {ExternalLinkPage} from './components/Pages/ExternalLinkPage/ExternalLinkPage'
 import {ExternalLink} from './components/Pages/ExternalLinkPage/ExternalLink'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -76,5 +79,8 @@ export {
     MapPopup,
     ExternalLinkPage,
     ExternalLink,
-    ResultTable
+    FgTabs,
+    ChildExtensionList,
+    ResultTable,
+    StandardGraph
   }

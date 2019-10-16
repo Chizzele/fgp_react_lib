@@ -10,6 +10,7 @@ export class DevicePage extends Component {
     this.state = {
       deviceName : window.location.href.split('/')[window.location.href.split('/').length-1],
       deviceType : this.props.deviceType,
+      childDeviceNames : [],
 
       isBefore1910 : this.props.isBefore1910 ? this.props.isBefore1910 : false,
 
@@ -60,8 +61,23 @@ export class DevicePage extends Component {
   }
 
   componentDidMount(){
-    this.fetchExtensions()
-    this.fetchRelations();
+    if(this.props.extensionNames){
+      this.fetchExtensions()
+    }else{
+      this.setState({
+        extensions : {},
+        hasDeviceExtensionLoaded : true
+      });
+    }
+    if(this.props.relationChildNames){
+      this.fetchRelations();
+    }else{
+      this.setState({
+        childrenWithLocationAndStylesLoaded : true,
+        childrenWithLocationAndStyles : [],
+        hasDeviceRelationsLoaded : true
+      });
+    }
   }
 
   componentDidUpdate(){
@@ -115,7 +131,12 @@ export class DevicePage extends Component {
           response.data.forEach( child => {
             deviceNames.push(child.name);
           })
-          
+          let tmpChildDeviceNames = [...this.state.childDeviceNames]
+          tmpChildDeviceNames.push({type:childType, deviceNames: deviceNames})
+          this.setState({
+            childDeviceNames : tmpChildDeviceNames
+          })
+
           if(this.state.isBefore1910 === true){
             axios.post(
               `${this.state.baseUrl}${childType}/location`,
@@ -238,6 +259,7 @@ export class DevicePage extends Component {
           childrenWithLocationAndStylesLoaded: this.state.childrenWithLocationAndStylesLoaded,
           extensionNames:  this.state.extensionNames,
           extensions:  this.state.extensions,
+          childDeviceNames: this.state.childDeviceNames
         }))
       }else{
         return child

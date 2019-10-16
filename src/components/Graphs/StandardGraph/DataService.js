@@ -3,7 +3,7 @@ export default class DataService {
         this.deviceType = deviceType;
         this.baseUrl = baseUrl;
     };
-    fetchFirstNLast = (ids, interval, fields) => {
+    fetchFirstNLast(ids, interval, fields) {
         console.log(ids);
         // console.log(interval);
        
@@ -18,7 +18,7 @@ export default class DataService {
         // console.log(fields);
          
     };
-    fetchdata = (ids, interval, range, fields) => {
+    fetchdata (ids, interval, range, fields) {
         return new Promise((resolve, reject) => {
             axios.post(`${baseUrl}transformer/${interval}`,
             {

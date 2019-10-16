@@ -1,60 +1,26 @@
-import React, { Component } from 'react';
-import './Search.css';
-import { SearchRow } from './searchrow/SearchRow';
-import axios from "axios";
-import ResultTable from './resulttable/ResultTable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Component } from './node_modules/react';
+import './MultiTableFilterSearch.css';
+import axios from "./node_modules/axios";
+import ResultTable from '../Search/resulttable/ResultTable';
+import { FontAwesomeIcon } from './node_modules/@fortawesome/react-fontawesome';
 
 
-export class Search extends Component {
+export class MultiTableFilterSearch extends Component {
   constructor(props){
     super(props);
     this.state = {
       searchConfig : {
-        searchingTypes : this.props.searchConfig.searchingTypes,
-        searchingColumns : this.props.searchConfig.searchingColumns,
-        columns : this.props.searchConfig.columns,
-        locationColumns : this.props.searchConfig.locationColumns,
-        customer : this.props.searchConfig.customer,
-        reference : this.props.searchConfig.reference,
-        defaultQtyRecordsToRetrieve : this.props.searchConfig.defaultQtyRecordsToRetrieve ?  this.props.searchConfig.defaultQtyRecordsToRetrieve : 125,
-        startFrom : this.props.searchConfig.defaultQtyRecordsToRetrieve ? this.props.searchConfig.defaultQtyRecordsToRetrieve : 0,
-        searchDirection : this.props.searchConfig.searchDirection ? this.props.searchConfig.searchDirection : "%20asc",
-        apiUrl : (this.props.baseApiUrl + this.props.searchConfig.reference),
-        hz : this.props.searchConfig.hz,
-        map : this.props.searchConfig.map
+        searchingTables : this.props.searchConfig.searchingTables, 
       },
-      searchRows : [
-        { searchingType : this.props.defaultSearchType,
-          searchingColumn : this.props.defaultSearchColumn,
-          searchingKeyword : "",
-          isFirst : true,
-          indexKey : Math.random()
-        }],
       hasLoaded : false,
       data : []
     };
     // console.log(this.props)
-    this.addSearchCriteria = this.addSearchCriteria.bind(this);
-    this.removeSearchCriteria = this.removeSearchCriteria.bind(this);
     this.makeSearch = this.makeSearch.bind(this);
   }
 
   componentDidMount(){
-    this.makeSearch(true)
-  }
 
-  addSearchCriteria() {
-    let defaultSearchRow = {
-      searchingType : this.props.defaultSearchType,
-      searchingColumn : this.props.defaultSearchColumn,
-      searchingKeyword : "",
-      isFirst : false,
-      indexKey : Math.random()
-    };
-    this.setState(state => ({
-      searchRows: state.searchRows.concat([defaultSearchRow])
-    }));
   }
 
   makeSearch(isFirstTime) {
@@ -84,81 +50,6 @@ export class Search extends Component {
       let query_rsql = [];
   
       this.state.searchRows.forEach(_c => {
-        if(_c.searchingType === "==*?*" || _c.searchingType === "==\"*?*\""){
-          // var _tempSearch = _c.searchingKeyword.replace("\"", "\\\"");
-          
-          var items = [];
-          var newSearch = null;
-  
-          if(_c.searchingType === "==\"*?*\""){
-              // single like address with comma
-            newSearch = _c.searchingKeyword;
-          }else if(_c.searchingType === "==*?*"){
-               // multi split by comma                     
-            for(var i = 0; i < _c.searchingKeyword.split(',').length; i++){
-              items.push(_c.searchingKeyword.split(',')[i].trim());
-            }
-          }
-          
-          if (_c.searchingColumn !== "all") {           
-            if(_c.searchingType === "==\"*?*\""){ 
-              // check
-              query_rsql.push(_c.searchingColumn + _c.searchingType.replace("?", newSearch) + "");
-            }else if(_c.searchingType === "==*?*"){
-              var final = "";
-              items.forEach(function(_item, _in){
-                var _tempRSQL = _c.searchingColumn + "" + "==\"*?*\"".replace("?", _item);
-                if(_in < items.length - 1){
-                  final += _tempRSQL + ",";
-                }else{
-                  final += _tempRSQL;
-                }
-              });
-              query_rsql.push(final);
-            }
-              
-        } else if(_c.searchingColumn === "all" && _c.searchingKeyword !== null && 
-                  _c.searchingKeyword.trim() !== ""){
-          if(_c.searchingType === "==\"*?*\""){
-            // put all column names here
-            var _tempRSQL = "(";
-            this.props.SearchConfig.searchingColumns.forEach(function(_column, _index){
-              if(_column.column !== "all"){
-                if(_index <  this.props.SearchConfig.searchingColumns.length -1){
-                  _tempRSQL += _column.column + "" + _c.searchingType.replace("?", newSearch) + ",";
-                }else{
-                  _tempRSQL += _column.column + "" + _c.searchingType.replace("?", newSearch);
-                }
-              }
-            });
-            _tempRSQL += ")";
-                  query_rsql.push(_tempRSQL);
-          }else if(_c.searchingType === "==*?*"){
-                  //
-            final = "";
-            items.forEach(function(_item, _in){
-              var _tempRSQL = "(";
-              this.props.SearchConfig.searchingColumns.forEach(function(_column, _index){
-                if(_column.column !== "all"){
-                  if(_index <  this.props.SearchConfig.searchingColumns.length -1){
-                    _tempRSQL += _column.column + "" + "==\"*?*\"".replace("?", _item) + ",";
-                  }else{
-                    _tempRSQL += _column.column + "" + "==\"*?*\"".replace("?", _item);
-                  }
-                }
-              });
-              _tempRSQL += ")";
-              if(_in < items.length - 1){
-                final += _tempRSQL + ",";
-              }else{
-                final += _tempRSQL;
-              }
-            });
-            query_rsql.push(final);
-          }
-              
-        }
-        }else{
           if (_c.searchingColumn !== "all") {                
             // check
             if (_c.searchingKeyword.indexOf("'") !== -1 || _c.searchingKeyword.indexOf("\"") !== -1) {
@@ -184,7 +75,6 @@ export class Search extends Component {
             _tempRSQL += ")";
             query_rsql.push(_tempRSQL);   
           }    
-        }
       });
      
       let url =  this.props.baseApiUrl + this.props.searchConfig.reference + '/data/' +
@@ -211,30 +101,21 @@ export class Search extends Component {
     }
   }
 
-  removeSearchCriteria(indexKey) {
-    let resultIndex = this.state.searchRows.findIndex(p => p.indexKey === indexKey)
-    let tempArr = [...this.state.searchRows];
-    tempArr.splice(resultIndex, 1)
-    this.setState({
-      searchRows: tempArr
-    });
-  }
-
-  updateKeyword(key, rowKey, value) {
+  updateSearchingTable(key, rowKey, value) {
     let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
     let temp = [...this.state.searchRows];
     temp[resultRow][key] = value.target.value
     this.setState({searchRows: temp})
   }
 
-  updateSearchingColumn(key, rowKey, value) {
+  updateStartDate(key, rowKey, value) {
     let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
     let temp = [...this.state.searchRows];
     temp[resultRow][key] = value.target.value
     this.setState({searchRows: temp})
   }
 
-  updateSearchingType(key, rowKey, value) {
+  updateEndDate(key, rowKey, value) {
     let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
     let temp = [...this.state.searchRows];
     temp[resultRow][key] = value.target.value
@@ -298,4 +179,4 @@ export class Search extends Component {
   }
 }
 
-export default Search
+export default MultiTableFilterSearch

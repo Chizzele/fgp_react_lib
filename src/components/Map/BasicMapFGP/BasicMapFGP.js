@@ -201,9 +201,11 @@ export class BasicMapFGP extends Component {
           }
         }
         if(isNaN(this.props.featuresParent.lng) === false && isNaN(this.props.featuresParent.lat) === false &&
-           this.props.featuresParent.lng !== 0 && this.props.featuresParent.lat !== 0){
+           this.props.featuresParent.lng !== 0 && this.props.featuresParent.lat !== 0 &&
+           this.props.featuresParent.lng !== null && this.props.featuresParent.lat !== null){
             points.push([this.props.featuresParent.lng, this.props.featuresParent.lat])
             geojsonObjectParent.features.push(featureObjParent)
+            console.log('pushing despite null')
         }
         // creates a vector source
   
