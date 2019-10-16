@@ -24,6 +24,8 @@ import {ChildExtensionList} from './components/TabWidgets/ChildExtensionList/Chi
 import {ExternalLinkPage} from './components/Pages/ExternalLinkPage/ExternalLinkPage'
 import {ExternalLink} from './components/Pages/ExternalLinkPage/ExternalLink'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {FilterSearchRow} from './components/MultiTableFilterSearch/FilterSearchRow/FilterSearchRow';
+import {MultiTableFilterSearch} from './components/MultiTableFilterSearch/MultiTableFilterSearch'
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import 'ol/ol.css';
@@ -82,5 +84,7 @@ export {
     FgTabs,
     ChildExtensionList,
     ResultTable,
-    StandardGraph
+    StandardGraph,
+    MultiTableFilterSearch,
+    FilterSearchRow
   }
