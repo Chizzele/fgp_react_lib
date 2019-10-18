@@ -26,6 +26,7 @@ import {ExternalLink} from './components/Pages/ExternalLinkPage/ExternalLink'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {FilterSearchRow} from './components/MultiTableFilterSearch/FilterSearchRow/FilterSearchRow';
 import {MultiTableFilterSearch} from './components/MultiTableFilterSearch/MultiTableFilterSearch'
+import {MultiReferenceFilterSearch} from './components/MultiReferenceFilterSearch/MultiReferenceFilterSearch'
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import 'ol/ol.css';
@@ -86,5 +87,6 @@ export {
     ResultTable,
     StandardGraph,
     MultiTableFilterSearch,
-    FilterSearchRow
+    FilterSearchRow,
+    MultiReferenceFilterSearch
   }

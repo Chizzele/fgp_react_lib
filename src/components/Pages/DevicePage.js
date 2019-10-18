@@ -266,7 +266,7 @@ export class DevicePage extends Component {
       }
     })
     return (
-      <div className={"fgReact_home " + (this.props.isOpen === true ? " fgReact_home-ext " : "  ")}>      
+      <div className={(this.props.noFgHome === true ? " ": " fgReact_home ") + (this.props.isOpen === true ? " fgReact_home-ext " : "  ")}>      
         { 
           this.state.hasDeviceExtensionLoaded === true && 
           this.state.hasDeviceRelationsLoaded === true &&

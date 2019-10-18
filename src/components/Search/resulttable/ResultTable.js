@@ -34,17 +34,31 @@ export class ResultTable extends Component {
     }else{
       data.forEach(element => {
         if(element["fgpRedirect"]){
-          element["Cell"] = row => (
+          if(element["fgpMutateRedirect"]){
+            element["Cell"] = row => (
               this.props.openInNewPage === true ? (
-                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${row.value}`}>
-                  {row.value}
+                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${row.value.split(element.fgpMutateRedirect)[0]}`}>
+                  { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
                 </a>
               ) : (
-                <NavLink to={element.fgpRedirect + row.value}>
-                   {row.value}
+                <NavLink to={`${element.fgpRedirect}${row.value.split(element.fgpMutateRedirect)[0]}`}>
+                   { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
                 </NavLink>
               )
           )
+          }else{
+            element["Cell"] = row => (
+                this.props.openInNewPage === true ? (
+                  <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${row.value}`}>
+                    { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
+                  </a>
+                ) : (
+                  <NavLink to={element.fgpRedirect + row.value}>
+                     { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
+                  </NavLink>
+                )
+            )
+          }
         }else if(element["fgpMutate"]){
           if(element.fgpMutate === "date"){
             if(element["fgpMutateConfig"]){
@@ -73,6 +87,12 @@ export class ResultTable extends Component {
               )
             }
           }
+        }else{
+          element["Cell"] = row => (
+            <span>
+              { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
+            </span>
+          )
         }
       });  
     }
