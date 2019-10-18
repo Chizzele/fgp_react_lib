@@ -14,7 +14,7 @@ export class SearchRow extends Component {
 
   render() {
     return (
-      <div className="col-12 fgReact_searchrow d-inline-flex align-items-center">
+      <div className="col-12 row fgReact_searchrow d-inline-flex align-items-center">
         <div className={"col-md-3 col-12 fgReact_searchInputContainer d-md-inline-flex align-items-center"}>
           <select className="form-control" value={this.props.searchingColumn} onChange={this.props.updateSearchingColumn}>>
             {

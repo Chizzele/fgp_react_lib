@@ -85,11 +85,11 @@ export class ResultTable extends Component {
   
   
   render() {
-    const filterCaseInsensitive = ({ id, value }, row) =>
+    const filterCaseInsensitive = ({ id, value }, row) => 
       row[id] ? row[id].toLowerCase().includes(value.toLowerCase()) : true
+    
 
-    console.log(this.buildData(this.props.data))
-    console.log(this.buildColumns(this.props.columns))
+    console.log("default sizw", this.props.defaultPageSize)
     return (
       <div className="ResultTable">
         <span className="ResultTable-title">{this.props.title}</span>

@@ -14,37 +14,40 @@
     transition-timing-function:  ease-in-out, ease-in-out;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #ced4da;
-    -webkit-appearance: textfield;
     outline-offset: -2px;
     font: 400 16px system-ui;
-    border-radius: .25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
 .fixedDatePicked input:first-of-type:focus{
     color: #495057;
     background-color: #fff;
+    border-radius: .25rem;
     transition-delay: 0s, 0s;
     transition-duration: 0.15s, 0.15s;
-    -webkit-appearance: textfield;
     transition-property: border-color, box-shadow;
     transition-timing-function:  ease-in-out, ease-in-out;
-    border-color: #80bdff;
+    border-color: #80bdff !important;
     outline: 0;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     outline-offset: -2px;
+    font-size: 1rem;
+    font-weight: 400;
     font: 400 16px system-ui;
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
 
 .fixedDatePicked input:first-of-type{
-    border: none;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+    font-weight: 400;
+    border-radius: .25rem;
     height: 100%;
     padding: .375rem .75rem;
-    -webkit-appearance: textfield;
     width: 100%;
     transition-delay: 0s, 0s;
     transition-duration: 0.15s, 0.15s;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     transition-property: border-color, box-shadow;
     transition-timing-function:  ease-in-out, ease-in-out;
     background: transparent;
@@ -55,6 +58,8 @@
 
 .fixedDatePicked input:first-of-type:focus{
     border: none;
+    font-size: 1rem;
+    font-weight: 400;
     outline: none;
     height: 100%;
     width: 100%;

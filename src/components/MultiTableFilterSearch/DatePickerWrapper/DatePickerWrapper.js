@@ -7,23 +7,14 @@ import moment from 'moment';
 export class DatePickerWrapper extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            thisDate: this.props.date ? this.props.date : moment()
-        };
-    }
-   
-    handleChange(date) {
-      this.setState({
-        thisDate: date
-      });
     }
    
     render() {
       return (
         <div className={"fixedDatePicked"}>
             <DatePicker
-              selected={this.state.thisDate}
-              onChange={this.handleChange}
+                selected={this.props.date}
+                onChange={this.props.handleChange}
             />
         </div>
       );

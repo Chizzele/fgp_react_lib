@@ -3,3 +3,8 @@
     font-size: 20px;
     margin: 0 auto;
 }
+
+.quadPad {
+    padding-right: 60px !important;
+    padding-left: 60px !important;
+}
