@@ -125,6 +125,8 @@ export class MultiTableFilterSearch extends Component {
                   fromDate={this.state.fromDate}
                   toDate={this.state.toDate}      
 
+                  dateFormat={this.props.dateFormat ? this.props.dateFormat : "yyyy-MM-dd"}
+                  
                   updateFromDate={this.updateFromDate.bind(this)}
                   updateToDate={this.updateToDate.bind(this)}
                   updateSearchingTable={this.updateSearchingTable.bind(this)}

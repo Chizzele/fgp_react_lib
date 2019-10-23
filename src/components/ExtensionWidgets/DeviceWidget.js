@@ -131,6 +131,7 @@ export class DeviceWidget extends Component {
                             this.props.mapType === "basic" || this.props.mapType === "" ? (
                             <div className={"col-7"}>
                                 <BasicMapFGP 
+                                    mapInteractions={this.props.mapInteractions}
                                     isBefore1910={this.props.isBefore1910}
                                     mapProjection={this.props.mapProjection}
                                     featuresParent={{

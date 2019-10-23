@@ -26,6 +26,7 @@ export class FilterSearchRow extends Component {
         </div>
         <div className={"col-md-4 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer"}>
           <DatePickerWrapper
+            dateFormat={this.props.dateFormat ? this.props.dateFormat : "yyyy-MM-dd"}
             date={this.props.fromDate}
             handleChange={this.props.updateFromDate}
             dropdownMode="select"
@@ -33,6 +34,7 @@ export class FilterSearchRow extends Component {
         </div>
         <div className={"col-md-4 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
           <DatePickerWrapper
+            dateFormat={this.props.dateFormat ? this.props.dateFormat : "yyyy-MM-dd"}
             date={this.props.toDate}
             handleChange={this.props.updateToDate}
             dropdownMode="select"

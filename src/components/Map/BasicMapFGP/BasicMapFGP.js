@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { MapPopup } from '../MapPopUp/MapPopUp'
+import { BasicMapDrawSelector } from '../BasicMapDrawSelector/BasicMapDrawSelector'
 import './BasicMapFGP.css';
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
@@ -8,6 +9,7 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import {defaults as defaultControls, OverviewMap} from 'ol/control.js';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
 import {OSM, Vector as VectorSource} from 'ol/source.js';
+import Draw, {createRegularPolygon, createBox} from 'ol/interaction/Draw';
 import {Circle as CircleStyle, Fill, Stroke, Style} from 'ol/style.js';
 
 
@@ -54,19 +56,41 @@ export class BasicMapFGP extends Component {
             popupVisible:false,
             focusedFeature: null,
             focusedGroup: null,
+            selectedFeatures: [],
+            vectorLayerSelectedFeatures : [],
+            compiledSelectedFeatures : [],
             hasChildren : this.props.featuresChildren ? true : false,
-            id: Math.random().toString(36).substr(2, 11)
+            id: Math.random().toString(36).substr(2, 11),
+            draw : null,
+            selectedFeaturesStyle : this.props.selectedFeaturesStyle ? this.props.selectedFeaturesStyle : {fillColor:'lightgoldenrodyellow', borderColor:"orange", radius:4, borderWidth:2}
         };
         // this.buildMap = this.buildMap.bind(this)
     }
+
+    createInteractions(){
+      this.props.mapInteractions.forEach( interaction => {
+        if(interaction.type === "draw"){
+          this.setState({
+            drawInteraction : true,
+            drawType : "None"  
+          })
+        }
+        if(interaction.type === "redirect"){
+          this.setState({
+            redirectInteraction : true,
+          })
+        }
+      });
+    }
     
     buildMap(){
+      this.createInteractions();
+
+
       var hasChildrenIn = this.state.hasChildren
       if(this.props.featuresParent.lat === 0 &&
         this.props.featuresParent.lng === 0 && 
         this.props.featuresChildren.length === 0 ){
-        // present "no location data"
-        console.log('caught ya bich')
         this.setState({
           noMapData : true,
         });
@@ -84,6 +108,12 @@ export class BasicMapFGP extends Component {
               fill: new Fill({color: this.props.featuresChildren[index].style.fillColor}),
               stroke: new Stroke({color: this.props.featuresChildren[index].style.borderColor, width: 1})
             })
+          }else if(type === "selectedFeatures"){
+            return new CircleStyle({
+              radius: radius,
+              fill: new Fill({color: this.state.selectedFeaturesStyle.fillColor}),
+              stroke: new Stroke({color: this.state.selectedFeaturesStyle.borderColor, width: 1})
+            })
           }
         }
         styleZoomer = styleZoomer.bind(this); // binding the state
@@ -95,10 +125,23 @@ export class BasicMapFGP extends Component {
             image: imageParent
           })
         };
-        
         var styleFunctionParent = function(feature) {
           return stylesParent[feature.getGeometry().getType()];
         };      
+
+        var imageSelectedFeatures = styleZoomer("selectedFeatures", 4)
+        var stylesSelectedFeatures  = {
+          'Point': new Style({
+            image: imageSelectedFeatures
+          })
+        }
+        var styleFunctionSelectedFeatures = function(feature) {
+          return stylesSelectedFeatures[feature.getGeometry().getType()];
+        };     
+        this.setState({
+          compiledSelectedFeatureStyle : styleFunctionSelectedFeatures,
+          styleFunctionParent : styleFunctionParent
+        })
   
         // intitializing the geojson
         let points = [];
@@ -150,6 +193,9 @@ export class BasicMapFGP extends Component {
                   "type": this.props.featuresChildren[x].deviceType,
                   "id": '_' + Math.random().toString(36).substr(2, 11),
                   "name": child.name,
+                  "borderColor": this.props.featuresChildren[x].style.borderColor,
+                  "borderWidth": this.props.featuresChildren[x].style.borderWidth,
+                  "fillColor": this.props.featuresChildren[x].style.fillColor,
                 }
               }
               if(isNaN(child.lat) === false && isNaN(child.lng) === false &&
@@ -165,6 +211,10 @@ export class BasicMapFGP extends Component {
               source: vectorSourceChildren,
               style: styleFunctionChildren
             });
+            this.setState({
+              styleFunctionChildren : styleFunctionChildren,
+              vectorSourceChildren: vectorSourceChildren
+            })
             vectorLayerChildrenArr.push(vectorLayerChildren)
           }
         }
@@ -198,18 +248,30 @@ export class BasicMapFGP extends Component {
             "type": this.props.featuresParentStyles.label,
             "id": '_' + Math.random().toString(36).substr(2, 11),
             "name": this.props.featuresParent.deviceName,
+            "borderColor": this.props.featuresParentStyles.borderColor,
+            "borderWidth": this.props.featuresParentStyles.borderWidth,
+            "fillColor": this.props.featuresParentStyles.fillColor,
           }
         }
         if(isNaN(this.props.featuresParent.lng) === false && isNaN(this.props.featuresParent.lat) === false &&
-           this.props.featuresParent.lng !== 0 && this.props.featuresParent.lat !== 0 &&
-           this.props.featuresParent.lng !== null && this.props.featuresParent.lat !== null){
-            points.push([this.props.featuresParent.lng, this.props.featuresParent.lat])
-            geojsonObjectParent.features.push(featureObjParent)
-            console.log('pushing despite null')
+        this.props.featuresParent.lng !== 0 && this.props.featuresParent.lat !== 0 &&
+        this.props.featuresParent.lng !== null && this.props.featuresParent.lat !== null){
+          points.push([this.props.featuresParent.lng, this.props.featuresParent.lat])
+          geojsonObjectParent.features.push(featureObjParent)
+          console.log('pushing despite null')
         }
+        
+        
+        var geojsonObjectSelectedFeatures = {
+          'type': 'FeatureCollection',
+          'features': [ ]
+        };
+  
+        // setting the style, labels and location for the parent
+
+  
+
         // creates a vector source
-  
-  
         var vectorSourceParent = new VectorSource({
           features: (new GeoJSON()).readFeatures(geojsonObjectParent)
         });
@@ -217,6 +279,16 @@ export class BasicMapFGP extends Component {
         var vectorLayerParent = new VectorLayer({
           source: vectorSourceParent,
           style: styleFunctionParent
+        });
+        
+        // creates a vector source
+        var vectorSourceSelectedFeatures = new VectorSource({
+          features: (new GeoJSON()).readFeatures(geojsonObjectSelectedFeatures)
+        });
+  
+        var vectorLayerSelectedFeatures = new VectorLayer({
+          source: vectorSourceSelectedFeatures,
+          style: styleFunctionSelectedFeatures
         });
         
         var getCentroid = function (coord) {
@@ -251,7 +323,7 @@ export class BasicMapFGP extends Component {
             layers: [
               new TileLayer({
                 source: new OSM()
-              })
+              }),
             ],
             target: this.state.id,
             view: new View({
@@ -269,18 +341,23 @@ export class BasicMapFGP extends Component {
             this.setState({
               map:map,
               featuresLayerChildren:vectorLayerChildrenArr,
-              featuresLayerParent:vectorLayerParent
+              featuresLayerParent:vectorLayerParent,
+              vectorLayerSelectedFeatures:vectorLayerSelectedFeatures
             })
         }else{
           this.setState({
             map:map,
+            vectorLayerSelectedFeatures:vectorLayerSelectedFeatures,
             featuresLayerParent:vectorLayerParent
           })
         }
         map.addLayer(vectorLayerParent)
+        map.addLayer(vectorLayerSelectedFeatures)
         // map.add
         // binding the hover event (popup dialogue)
         map.on('pointermove', this.handleMapHover.bind(this));     
+        map.on('click', this.handleMapClick.bind(this, map))
+        // this.handleDrawingSelection.bind(this, map)
         // changing the size of the features on the map with zoom level 
         map.getView().on('change:resolution', function(evt) {
           var currZoomLevel = map.getView().getZoom();
@@ -297,9 +374,9 @@ export class BasicMapFGP extends Component {
             radius = 1;
           }
           var stylesParent = new Style({image: styleZoomer("parent", radius)});
+          var stylesSelectedFeatures = new Style({image: styleZoomer("selectedFeatures", radius)});
           vectorLayerParent.setStyle(stylesParent);
-  
-          // var parentScaleStyle = imageParent
+          vectorLayerSelectedFeatures.setStyle(stylesSelectedFeatures);
   
           if(hasChildrenIn === true){
             for(var x = 0; x < vectorLayerChildrenArr.length; x ++){
@@ -331,40 +408,125 @@ export class BasicMapFGP extends Component {
       
     }
 
+    handleDrawingSelection(event){
+      // console.log(map, event)
+      this.setState({
+        drawType : event.target.value
+      });      
+      console.log(this.state.map)
+      // this.state.map
 
-    handleMapClick(event){
-      this.state.map.updateSize()
-      let feature = this.state.map.forEachFeatureAtPixel(event.pixel, feature => {    
-        return feature
-      });     
-      if(feature){
-        this.setState({
-          focusedFeature: feature.values_,
-          popupVisible: true
-        })
-      }else{
-        this.setState({
-          focusedFeature: null,
-          popupVisible: false
-        })
+    }
+
+    handleMapClick(map, event){
+      if(this.state.redirectInteraction !== true){
+        if(this.state.drawType === "None"){
+          let selectedFeatures = [...this.state.selectedFeatures]
+          let resettingFeatures = [];
+          // adding or removing feature from list of selected features, then setting state
+          this.state.map.forEachFeatureAtPixel(event.pixel, feature => {    
+            this.state.selectedFeatures.indexOf(feature) === -1 ? selectedFeatures.push(feature) : resettingFeatures.push(selectedFeatures.splice(this.state.selectedFeatures.indexOf(feature), 1)[0]);
+          });
+  
+          var image = new CircleStyle({
+            radius: this.state.selectedFeaturesStyle.radius,
+            fill: new Fill({
+              color: this.state.selectedFeaturesStyle.fillColor
+            }),
+            stroke: new Stroke({
+              color: this.state.selectedFeaturesStyle.borderColor, 
+              width: this.state.selectedFeaturesStyle.borderWidth
+            })
+          });
+          var styles = {
+            'Point': new Style({
+              image: image
+            })
+          };
+          // Returning the actual style function, needed for first time creation, not modifying functions
+          var style = function(feature) {
+            return styles[feature.getGeometry().getType()];
+          };  
+        
+          selectedFeatures.map( feature => {
+            feature.setStyle(style)
+          })
+  
+          resettingFeatures.map( feature => {
+            let fProps = feature.getProperties()
+            var image2 = new CircleStyle({
+              radius: 4,
+              fill: new Fill({
+                color: fProps.fillColor
+              }),
+              stroke: new Stroke({
+                color: fProps.borderColor, 
+                width: fProps.borderWidth
+              })
+            });
+            var styles2 = {
+              'Point': new Style({
+                image: image2
+              })
+            };
+            // Returning the actual style function, needed for first time creation, not modifying functions
+            var style2 = function(feature) {
+              return styles2[feature.getGeometry().getType()];
+            };  
+            feature.setStyle(style2)
+          })
+          this.setState({
+            selectedFeatures : selectedFeatures,
+            map: map
+          })
+          
+        }else if(this.state.drawType === "Square"){
+          let draw;
+          let value = this.state.drawType;
+          map.removeInteraction(draw)
+          let source = this.state.vectorSourceChildren
+          function addInteraction(source){
+            var geometryFunction;
+            value = 'Circle';
+            geometryFunction = createRegularPolygon(4);
+            draw = new Draw({
+              source: source,
+              type: value,
+              geometryFunction: geometryFunction
+            });
+            map.addInteraction(draw);
+          }
+          
+          addInteraction(source);
+          console.log('Is a Square nibba') 
+        } 
+      }else if(this.state.redirectInteraction === true){
+        let selectedFeatures = [...this.state.selectedFeatures]
+        let resettingFeatures = [];
+        // redirecting
+        this.state.map.forEachFeatureAtPixel(event.pixel, feature => {    
+          window.location.href = `http://${window.location.host}/${feature.getProperties().type}/${feature.getProperties().name}`
+        });
       }
     }
 
     handleMapHover(event){
-      let featureArr = [];
-      this.state.map.forEachFeatureAtPixel(event.pixel, feature => {    
-        featureArr.push(feature.values_);
-      });     
-      if(featureArr.length > 0){
-        this.setState({
-          focusedFeatures: featureArr,
-          popupVisible: true
-        })
-      }else{
-        this.setState({
-          focusedFeature: null,
-          popupVisible: false
-        })
+      if(this.state.drawType === "None" || this.state.drawInteraction !== true){
+        let featureArr = [];
+        this.state.map.forEachFeatureAtPixel(event.pixel, feature => {    
+          featureArr.push(feature.values_);
+        });     
+        if(featureArr.length > 0){
+          this.setState({
+            focusedFeatures: featureArr,
+            popupVisible: true
+          })
+        }else{
+          this.setState({
+            focusedFeature: null,
+            popupVisible: false
+          })
+        }
       }
     }
 
@@ -378,6 +540,17 @@ export class BasicMapFGP extends Component {
               visibility={this.state.popupVisible}
               focusedFeatures={this.state.focusedFeatures}
             />
+            {/* {
+              this.state.drawInteraction === true ? (
+                <BasicMapDrawSelector
+                  handleDrawingSelection={this.handleDrawingSelection.bind(this)}
+                  drawType={this.state.drawType}
+                  selectedFeatures={this.state.selectedFeatures}
+                />
+              ) : (
+                null
+              )
+            } */}
           </div>
         )
     }

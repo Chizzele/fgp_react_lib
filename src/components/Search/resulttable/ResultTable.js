@@ -4,6 +4,7 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import { NavLink} from 'react-router-dom' ;
 import Moment from 'react-moment';
+import moment from 'moment';
 // import axios from "axios";
 
 export class ResultTable extends Component {
@@ -15,6 +16,8 @@ export class ResultTable extends Component {
     // console.log(this.props)
     this.buildData = this.buildData.bind(this);
     this.buildColumns = this.buildColumns.bind(this);
+
+    this.mutationHandler = this.mutationHandler.bind(this);
   }
 
   buildData(data){
@@ -24,76 +27,110 @@ export class ResultTable extends Component {
     return data;
   }
 
+  // mutates each row of data to present how we want it, returns a row after processing
+  mutationHandler(element, row){
+    let processedRow = {...row};
+    // mutating the value
+    // ensuring we have a split-able value 
+    // !null === true
+    // !"" === true
+    // !undefined === true
+    if(!row.value === false){
+      // value mutation
+      if(element["fgpValueMutate"]){
+        if(element["fgpValueMutateIndex"]){
+          processedRow.value = row.value.split(element.fgpValueMutate)[element.fgpValueMutateIndex];
+        }else{
+          processedRow.value = row.value.split(element.fgpValueMutate)[0];
+        }
+      }
 
+      // formatting mutations
+      if(element["fgpMutate"]){
+        if(element.fgpMutate === "date"){
+          if(element["fgpMutateConfig"]){
+            processedRow.value = moment(row.value).format(element.fgpMutateConfig)
+          //format to lll  
+          }else{
+            processedRow.value = moment(row.value).format("lll")
+          }
+        }else if(element.fgpMutate === "round"){  
+          if(element["fgpMutateConfig"]){
+            processedRow.value = Math.round((row.value * Math.pow(10, element.fgpMutateConfig))) / Math.pow(10, element.fgpMutateConfig);
+          }else{
+            processedRow.value = Math.round(row.value);
+          }
+        }
+      }
+
+
+      // final step is redirection
+      if(element["fgpRedirect"]){
+        var link = row.value;
+        // if we want to mutate the redirect link (don't want to mutate the data that gets displayed)
+        if(element["fgpRedirectMutate"]){
+          if(element["fgpRedirectMutateIndex"]){
+            if(this.props.openInNewPage === true){
+              return(
+              <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
+                {processedRow.value}
+              </a>  
+              )
+            }else{
+              return(
+              <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
+                {processedRow.value}
+              </NavLink>
+              )
+            }
+          }else{
+            if(this.props.openInNewPage === true){
+              return(
+              <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
+                {processedRow.value}
+              </a>                
+              )
+            }else{
+              return(
+              <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
+                {processedRow.value}
+              </NavLink>
+              )
+            }
+          }
+        }else{
+          // if the prop is set, open in new tab
+          if(this.props.openInNewPage === true){
+            return (
+              <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link}`}>
+                {processedRow.value}
+              </a>  
+            )
+          }else{
+            return (
+              <NavLink to={`${element.fgpRedirect}${link}`}>
+                {processedRow.value}
+              </NavLink>
+            )  
+          }
+        }
+      }else{
+        return(<div> {processedRow.value} </div>)  
+      }
+    }else{
+      return(<div> {processedRow.value} </div>)
+    }
+  }
 
 
   buildColumns(data){
     // console.log(data)
     if(this.props.ignoreBuildCols){
-
     }else{
       data.forEach(element => {
-        if(element["fgpRedirect"]){
-          if(element["fgpMutateRedirect"]){
-            element["Cell"] = row => (
-              this.props.openInNewPage === true ? (
-                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${row.value.split(element.fgpMutateRedirect)[0]}`}>
-                  { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
-                </a>
-              ) : (
-                <NavLink to={`${element.fgpRedirect}${row.value.split(element.fgpMutateRedirect)[0]}`}>
-                   { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
-                </NavLink>
-              )
-          )
-          }else{
-            element["Cell"] = row => (
-                this.props.openInNewPage === true ? (
-                  <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${row.value}`}>
-                    { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
-                  </a>
-                ) : (
-                  <NavLink to={element.fgpRedirect + row.value}>
-                     { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
-                  </NavLink>
-                )
-            )
-          }
-        }else if(element["fgpMutate"]){
-          if(element.fgpMutate === "date"){
-            if(element["fgpMutateConfig"]){
-              element["Cell"] = row => (
-                <Moment date={row.value} format={element.fgpMutateConfig}>
-                </Moment>
-              )
-            }else{
-              element["Cell"] = row => (
-                <Moment date={row.value} format={"lll"}>
-                </Moment>
-              )
-            }
-          }else if(element.fgpMutate === "round"){
-            if(element["fgpMutateConfig"]){
-              element["Cell"] = row => (
-                <span>
-                  {Math.round((row.value * Math.pow(10, element.fgpMutateConfig))) / Math.pow(10, element.fgpMutateConfig)}
-                </span>
-              )
-            }else{
-              element["Cell"] = row => (
-                <span>
-                  {Math.round(row.value)}
-                </span>
-              )
-            }
-          }
-        }else{
-          element["Cell"] = row => (
-            <span>
-              { element["fgpValueMutate"] ? row.value.split(element.fgpValueMutate)[0] : row.value}
-            </span>
-          )
-        }
+        element["Cell"] = row => (
+          this.mutationHandler(element, row)
+        )
       });  
     }
     return data;

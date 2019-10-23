@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import FgpGraph from '@future-grid/fgp-graph';
 import DataService from './DataService';
 import { Formatters } from '@future-grid/fgp-graph/lib/extras/formatters';
+import moment from 'moment';
+import './standardGraph.css';
 
 export class StandardGraph extends Component {
     constructor(props){
@@ -11,7 +13,7 @@ export class StandardGraph extends Component {
             formatters : this.props.timeZone ? new Formatters(this.props.timeZone) : new Formatters(Intl.DateTimeFormat().resolvedOptions().timeZone),
             id : `sg_${Math.random().toString(36).substr(2, 11)}`
         }
-
+        console.log("this props => ", this.props)
     }
 
     buildConfig(){
@@ -21,9 +23,9 @@ export class StandardGraph extends Component {
         let initRange = this.props.initRange ? this.props.initRange : {
             start: moment().tz('Australia/Adelaide').subtract(2, 'days').startOf('day').valueOf(),
             end: moment().tz('Australia/Adelaide').add(1, 'days').startOf('day').valueOf()
-        };
+        };        
         let vfConfig = {
-            name: 'device view',
+            name: this.props.graphName ? this.props.graphName : "Device View",
             graphConfig: {
                 features: {
                     zoom: this.props.zoom ? this.props.zoom : true,
@@ -63,13 +65,32 @@ export class StandardGraph extends Component {
             },
             timezone: this.props.timeZone
         }
+        this.renderGraph(vfConfig)
     }
 
+    renderGraph(config){
+        let graph = new FgpGraph(document.getElementById(this.state.id),[
+            config
+        ])
+        graph.initGraph()
+    } 
+
+    componentDidMount(){        
+        this.buildConfig()
+    }
 
     render() {
+        
+        var graphContainer = {
+            height: '300px', 
+            padding: '10px'
+        };
         return (
-            <div id={this.state.id}>
-                
+            <div className={'container'}>
+                <div id={this.state.id} style={graphContainer}>
+
+                </div>
+
             </div>
         )
     }

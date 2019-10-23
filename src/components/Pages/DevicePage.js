@@ -259,7 +259,8 @@ export class DevicePage extends Component {
           childrenWithLocationAndStylesLoaded: this.state.childrenWithLocationAndStylesLoaded,
           extensionNames:  this.state.extensionNames,
           extensions:  this.state.extensions,
-          childDeviceNames: this.state.childDeviceNames
+          childDeviceNames: this.state.childDeviceNames,
+          mapInteractions : this.props.mapInteractions ? this.props.mapInteractions : []
         }))
       }else{
         return child

@@ -1,14 +1,18 @@
+import axios from "axios"
 export default class DataService {
-    constructor(deviceType, baseUrl){
+    constructor(deviceType, baseUrl, backUpInterval){
         this.deviceType = deviceType;
         this.baseUrl = baseUrl;
+        if(backUpInterval){
+            this.backUpInterval = backUpInterval
+        }
+        
+        console.log("base url=> ",  this.baseUrl)
     };
     fetchFirstNLast(ids, interval, fields) {
-        console.log(ids);
-        // console.log(interval);
-       
+        console.log("hit first and last")
         return new Promise((resolve, reject) => {
-            axios.get(`${baseUrl}transformer/${interval}/${ids[0]}/first-last`)
+            axios.get(`${this.baseUrl}${this.deviceType}/${interval}/${ids[0]}/first-last`)
             .then(res => { 
                 //console.log(res.data);
                 res.id = ids[0];
@@ -19,11 +23,18 @@ export default class DataService {
          
     };
     fetchdata (ids, interval, range, fields) {
+        if( interval ){
+            this.backUpInterval = interval
+        }else{
+            interval = this.backUpInterval
+        }
+        console.log("hit the fetchdata", ids, interval, parseInt(range.start),parseInt(range.end) )
+
         return new Promise((resolve, reject) => {
-            axios.post(`${baseUrl}transformer/${interval}`,
+            axios.post(`${this.baseUrl}${this.deviceType}/${interval}`,
             {
-                "start" : range.start,
-                "end" : range.end,
+                "start" : parseInt(range.start),
+                "end" : parseInt(range.end),
                 "devices": [ids[0]]
             })
             .then(res => { 
@@ -31,6 +42,8 @@ export default class DataService {
                 res = res.data[ids[0]];
                 res.id = ids[0];
                 resolve([res]) 
+            }). catch( res => {
+
             });
         });
     }
