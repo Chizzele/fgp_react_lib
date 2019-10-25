@@ -37,39 +37,35 @@ export class SearchRow extends Component {
             }
           </select>
         </div>
-        <div className={"col-md-3 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
+        <div className={"col-md-4 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
           <input className="form-control" placeholder="Keyword..." value={this.props.searchingKeyword} onChange={this.props.updateKeyword}>
           </input>
         </div>
-
-         { 
-           this.props.isFirst === true ? (
-              <div className="d-inline-flex align-items-center col-1 "> 
-                <div className="fgReact_plusButtonOuter d-md-inline-flex align-items-center" onClick={this.props.addSearchCriteria}>
-                  <FontAwesomeIcon className="fgReact_plusButton" icon={["fas", "plus"]}/>
-                </div> 
-              </div>
-            ) 
-            : (
-              <div className="d-inline-flex align-items-center col-1 "> 
-                <div className="fgReact_minusButtonOuter d-md-inline-flex align-items-center" onClick={() => this.props.removeSearchCriteria(this.props.indexKey)}>
-                  <FontAwesomeIcon className="fgReact_minusButton" icon={["fas", "minus"]}/>
-                </div>
-              </div> 
-            )
-          }
-         { 
-           this.props.isFirst === true ? (
-              <div className="d-inline-flex align-items-center col-1 "> 
-                <div className="fgReact_searchButtonOuter d-md-inline-flex align-items-center" onClick={this.props.makeSearch}>
-                 <FontAwesomeIcon className="fgReact_searchButton" icon={["fas", "search"]}/>
-                </div>
-              </div> 
-            ) 
-            : (
-              ""
-            )
-          }
+          <div className="d-inline-flex align-items-center col-12 col-md-2 "> 
+          { 
+            this.props.isFirst === true ? (
+                
+                  <button className="btn btn-secondary" style={{"marginRight":"20px"}} onClick={this.props.addSearchCriteria}>
+                    <FontAwesomeIcon className="" icon={["fas", "plus"]}/>
+                  </button> 
+              ) 
+              : (
+                  <button className="btn btn-secondary" onClick={() => this.props.removeSearchCriteria(this.props.indexKey)}>
+                    <FontAwesomeIcon className="" icon={["fas", "minus"]}/>
+                  </button>
+              )
+            }
+          { 
+            this.props.isFirst === true ? (
+                  <button className="btn btn-primary" onClick={this.props.makeSearch}>
+                  <FontAwesomeIcon className="" icon={["fas", "search"]}/>
+                  </button>
+              ) 
+              : (
+                ""
+              )
+            }
+          </div>
 
       </div>
     )

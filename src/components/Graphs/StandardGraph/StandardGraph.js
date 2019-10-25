@@ -9,7 +9,13 @@ export class StandardGraph extends Component {
     constructor(props){
         super(props);
         this.state = {
-            dataService : new DataService(this.props.deviceType, this.props.baseUrl),
+            dataService : new DataService(
+                this.props.deviceType, 
+                this.props.baseUrl, 
+                this.props.backUpInterval,
+                this.props.backupFields,
+                this.props.graphVersion ? this.props.graphVersion : null
+                ),
             formatters : this.props.timeZone ? new Formatters(this.props.timeZone) : new Formatters(Intl.DateTimeFormat().resolvedOptions().timeZone),
             id : `sg_${Math.random().toString(36).substr(2, 11)}`
         }

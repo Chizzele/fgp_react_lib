@@ -122,9 +122,9 @@ export class Search extends Component {
           if(_c.searchingType === "==\"*?*\""){
             // put all column names here
             var _tempRSQL = "(";
-            this.props.SearchConfig.searchingColumns.forEach(function(_column, _index){
+            this.state.searchConfig.searchingColumns.forEach(function(_column, _index){
               if(_column.column !== "all"){
-                if(_index <  this.props.SearchConfig.searchingColumns.length -1){
+                if(_index <  this.props.searchConfig.searchingColumns.length -1){
                   _tempRSQL += _column.column + "" + _c.searchingType.replace("?", newSearch) + ",";
                 }else{
                   _tempRSQL += _column.column + "" + _c.searchingType.replace("?", newSearch);
@@ -138,9 +138,9 @@ export class Search extends Component {
             final = "";
             items.forEach(function(_item, _in){
               var _tempRSQL = "(";
-              this.props.SearchConfig.searchingColumns.forEach(function(_column, _index){
+              this.state.searchConfig.searchingColumns.forEach(function(_column, _index){
                 if(_column.column !== "all"){
-                  if(_index <  this.props.SearchConfig.searchingColumns.length -1){
+                  if(_index <  this.state.searchConfig.searchingColumns.length -1){
                     _tempRSQL += _column.column + "" + "==\"*?*\"".replace("?", _item) + ",";
                   }else{
                     _tempRSQL += _column.column + "" + "==\"*?*\"".replace("?", _item);
@@ -172,9 +172,9 @@ export class Search extends Component {
           } else if(_c.searchingColumn === "all"){
             // put all column names here
             _tempRSQL = "(";
-            this.props.SearchConfig.searchingColumns.forEach(function(_column, _index){
+            this.state.searchConfig.searchingColumns.forEach(function(_column, _index){
               if(_column.column !== "all"){
-                if(_index <  this.props.SearchConfig.searchingColumns.length - 1){
+                if(_index <  this.state.searchConfig.searchingColumns.length - 1){
                   _tempRSQL += _column.column + "" + _c.searchingType.replace("?", newSearch) + ",";
                 }else{
                   _tempRSQL += _column.column + "" + _c.searchingType.replace("?", newSearch);

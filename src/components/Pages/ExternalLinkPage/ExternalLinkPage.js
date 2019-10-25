@@ -13,11 +13,11 @@ export class ExternalLinkPage extends Component {
         return (
             <div className={ "fgReact_home "}>
                 <div className={"fgReact_workingArea"}>
-                    <div className={"text-left w-100 fgReact_SearchPageTitle "  +  (this.props.isFluid === true ? " container-fluid " : " container ")}>
+                    <div className={"fgReact_SearchPageTitle "  +  (this.props.isFluid === true ? " container-fluid " : " container ")}>
                         {this.state.title}
                     </div>
-                    <div className={"operations " +  (this.props.isFluid === true ? " container-fluid " : " container ")}>
-                        <div className={"col-12 row"}>
+                    <div  className={"operations fgReact_componentContainer " +  (this.props.isFluid === true ? " container-fluid " : " container ")}>
+                        <div className={"w-100 row"}>
                         {   // for each group, show the categories, for each category, show links
                             this.props.config.map( group => {
                                 return(
@@ -25,7 +25,7 @@ export class ExternalLinkPage extends Component {
                                     {
                                         group.category.map( category => {
                                             return(
-                                                <div key={`k_c_${category.label}`} className={"fgReact_componentContainer d-block"}>
+                                                <div key={`k_c_${category.label}`} className={"fgReact_componentContainer d-block text-left"}>
                                                     <h4> {category.label} </h4>
                                                     <ul style={{"padding-left" : "0"}}>
                                                         {

@@ -10,10 +10,13 @@ export class DeviceWidget extends Component {
   constructor(props){
     super(props);
     this.state = {
-        widgetDataProcessor : new WidgetDataProcessor(this.props.processorConfig)
+        widgetDataProcessor : new WidgetDataProcessor(this.props.processorConfig),
+        showWidget : this.props.showWidget ? this.props.showWidget : "show"
     };
     this.caseString = this.caseString.bind(this);
-    this.renderData = this.renderData.bind(this)
+    this.renderData = this.renderData.bind(this);
+    this.toggleVisibility = this.toggleVisibility.bind(this);
+
     console.log("props", props)
   } 
   
@@ -22,7 +25,6 @@ export class DeviceWidget extends Component {
   }
 
   caseString(string, caseType) {
-    console.log("STRING LOG FOR NAVEEN >>> ", string)
     let newString = new String();
     string.split("_").forEach( (word, index) =>{
         if(caseType === "camel"){
@@ -42,6 +44,20 @@ export class DeviceWidget extends Component {
         newString += word + " "
     })
     return newString;
+  }
+
+  toggleVisibility(){
+    if(this.state.showWidget === "show"){
+        this.setState({
+            showWidget : false
+        })
+    }else{
+        this.setState({
+            showWidget : "show"
+        })
+    }
+    
+    console.log(this.state.showWidget)
   }
 
   renderData () {
@@ -85,109 +101,133 @@ export class DeviceWidget extends Component {
                     ""
                 )
             }
-        <div className={" fgReact_componentContainer fgReact_startTop " + (this.props.hasBreadCrumbs === true ? 'mt-0 ' : ' ') + (this.props.isFluid === true ? " container-fluid " : " container ")} >
-            <div className="row col-12 fgReact_assetName alignLeft">
-                <div className={"col-12"} style={{"textAlign" : "left"}}>
-                {   
-                    // Formatting the Device type string for a title
-                    this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing)
-                }   
-                :&nbsp;
-                <label className="fgReact_assetLabel">{this.props.deviceName}</label>
-                </div>
+        <div className={" fgReact_componentContainer fgReact_startTop " + (this.props.hasBreadCrumbs === true ? 'mt-0 ' : ' ') + (this.props.isFluid === true ? " container-fluid " : " container ")} >            
             {
-                this.props.mapType !== 'none' ? (
-                    <div className="col-12 row">
-                        <div className="col-5">
-                            <div className="row info_r">
-                                <ul className="col-12 alignLeft info_r_list">
-                                {
-                                    // Iterates over the data set and renders each as a title and label
-                                    // Will not work for things that pass in objects/lists/null.
-                                    this.state.data ? 
-                                    this.state.data.map((row, i) => {
-                                    if(typeof row.data !== 'object') {
-                                        if(row.redirect) {
-                                        return ( // if there is a redirect, render the row with the redirect
-                                            <li key={row.key}>
-                                                <a className="fgReact_assetRedirect" href={row.redirect}> <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} /> </a>
-                                            </li>
-                                        )
-                                        } else {
-                                        return ( // if there is no redirect, render the row on its own
-                                            <li key={row.key}>
-                                            <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} />
-                                            </li>
-                                        )
-                                        }
-                                    }
-                                    }) : ""
-                                }
-                                </ul>
-                            </div>
-                        </div> 
-                        
-                        {   //rendering the basic map
-                            this.props.mapType === "basic" || this.props.mapType === "" ? (
-                            <div className={"col-7"}>
-                                <BasicMapFGP 
-                                    mapInteractions={this.props.mapInteractions}
-                                    isBefore1910={this.props.isBefore1910}
-                                    mapProjection={this.props.mapProjection}
-                                    featuresParent={{
-                                        deviceName: this.props.deviceName,
-                                        lat: this.props.extensions["location"] ? this.props.extensions.location.lat : null ,
-                                        lng: this.props.extensions["location"] ? this.props.extensions.location.lng : null
-                                    }}
-                                    featuresParentStyles={{
-                                        label : this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing),
-                                        borderColor : this.props.mapParentColors.borderColor,
-                                        borderWidth : "1",
-                                        fillColor : this.props.mapParentColors.fillColor,
-                                    }}
-                                    featuresChildren={this.props.childrenWithLocationAndStyles}
-                                    
-                                />
-                            </div> 
-                            ) : (
-                            ""
-                            )
-                        } 
-                    </div>
-
-                ) : (
-                    <div className="col-12">
-                        <div className="row info_r">
-                            <ul className="col-12 alignLeft info_r_list">
-                            {
-                                // Iterates over the data set and renders each as a title and label
-                                // Will not work for things that pass in objects/lists/null.
-                                this.state.data ? 
-                                this.state.data.map((row, i) => {
-                                if(typeof row.data !== 'object') {
-                                    if(row.redirect) {
-                                    return ( // if there is a redirect, render the row with the redirect
-                                        <li key={row.key}>
-                                            <a className="fgReact_assetRedirect" href={row.redirect}> <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} /> </a>
-                                        </li>
-                                    )
-                                    } else {
-                                    return ( // if there is no redirect, render the row on its own
-                                        <li key={row.key}>
-                                        <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} />
-                                        </li>
-                                    )
-                                    }
-                                }
-                                }) : ""
-                            }
-                            </ul>
+                    this.state.showWidget === "show" ? (
+                        <div className="row col-12 fgReact_assetName alignLeft">
+                        <div className={"row col-12"}>
+                        <div className={"col-9"} style={{"textAlign" : "left"}}>
+                        {   
+                            // Formatting the Device type string for a title
+                            this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing)
+                        }   
+                        :&nbsp;
+                        <label className="fgReact_assetLabel">{this.props.deviceName}</label>
                         </div>
-                    </div>  
-                )
-
+                        <div className={"col-3 text-right"}>
+                            <button className={"btn btn-primary"} onClick={this.toggleVisibility.bind(this)}> Hide Details</button>
+                        </div>
+                        </div>
+                    {
+                        this.props.mapType !== 'none' ? (
+                            <div className="col-12 row">
+                                <div className="col-5">
+                                    <div className="row info_r">
+                                        <ul className="col-12 alignLeft info_r_list">
+                                        {
+                                            // Iterates over the data set and renders each as a title and label
+                                            // Will not work for things that pass in objects/lists/null.
+                                            this.state.data ? 
+                                            this.state.data.map((row, i) => {
+                                            if(typeof row.data !== 'object') {
+                                                if(row.redirect) {
+                                                return ( // if there is a redirect, render the row with the redirect
+                                                    <li key={row.key}>
+                                                        <a className="fgReact_assetRedirect" href={row.redirect}> <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} /> </a>
+                                                    </li>
+                                                )
+                                                } else {
+                                                return ( // if there is no redirect, render the row on its own
+                                                    <li key={row.key}>
+                                                    <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} />
+                                                    </li>
+                                                )
+                                                }
+                                            }
+                                            }) : ""
+                                        }
+                                        </ul>
+                                    </div>
+                                </div> 
+                                
+                                {   //rendering the basic map
+                                    this.props.mapType === "basic" || this.props.mapType === "" ? (
+                                    <div className={"col-7"}>
+                                        <BasicMapFGP 
+                                            mapInteractions={this.props.mapInteractions}
+                                            isBefore1910={this.props.isBefore1910}
+                                            mapProjection={this.props.mapProjection}
+                                            featuresParent={{
+                                                deviceName: this.props.deviceName,
+                                                lat: this.props.extensions["location"] ? this.props.extensions.location.lat : null ,
+                                                lng: this.props.extensions["location"] ? this.props.extensions.location.lng : null
+                                            }}
+                                            featuresParentStyles={{
+                                                label : this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing),
+                                                borderColor : this.props.mapParentColors.borderColor,
+                                                borderWidth : "1",
+                                                fillColor : this.props.mapParentColors.fillColor,
+                                            }}
+                                            featuresChildren={this.props.childrenWithLocationAndStyles}
+                                            
+                                        />
+                                    </div> 
+                                    ) : (
+                                    ""
+                                    )
+                                } 
+                            </div>
+        
+                        ) : (
+                            <div className="col-12">
+                                <div className="row info_r">
+                                    <ul className="col-12 alignLeft info_r_list">
+                                    {
+                                        // Iterates over the data set and renders each as a title and label
+                                        // Will not work for things that pass in objects/lists/null.
+                                        this.state.data ? 
+                                        this.state.data.map((row, i) => {
+                                        if(typeof row.data !== 'object') {
+                                            if(row.redirect) {
+                                            return ( // if there is a redirect, render the row with the redirect
+                                                <li key={row.key}>
+                                                    <a className="fgReact_assetRedirect" href={row.redirect}> <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} /> </a>
+                                                </li>
+                                            )
+                                            } else {
+                                            return ( // if there is no redirect, render the row on its own
+                                                <li key={row.key}>
+                                                <DeviceDataRow key={row.key} title={row.title} data={row.data} style={row.style} />
+                                                </li>
+                                            )
+                                            }
+                                        }
+                                        }) : ""
+                                    }
+                                    </ul>
+                                </div>
+                            </div>  
+                        )
+        
+                    }
+                    </div>
+                    ): (
+                        <div className={"row col-12 fgReact_assetName"}>
+                        <div className={"col-9"} style={{"textAlign" : "left"}}>
+                        {   
+                            // Formatting the Device type string for a title
+                            this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing)
+                        }   
+                        :&nbsp;
+                        <label className="fgReact_assetLabel">{this.props.deviceName}</label>
+                        </div>
+                        <div className={"col-3 text-right"}>
+                            <button className={"btn btn-primary"} onClick={this.toggleVisibility.bind(this)}> Show Details</button>
+                        </div>
+                        </div>
+                    )
             }
-            </div>
+
         </div>
         </div>
     )

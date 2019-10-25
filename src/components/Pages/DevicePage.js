@@ -24,6 +24,8 @@ export class DevicePage extends Component {
       breadCrumbDeviceTypes: this.props.breadCrumbDeviceTypes,
       breadCrumbDeviceImages: this.props.breadCrumbDeviceImages,
       breadCrumbDeviceUrlPaths: this.props.breadCrumbDeviceUrlPaths,
+
+      showWidget : this.props.showWidget ? this.props.showWidget : "show",
       
       baseUrl: this.props.baseUrl,
       deviceTypeTitleCasing : this.props.deviceTypeTitleCasing ? this.props.deviceTypeTitleCasing : "none",
@@ -187,12 +189,16 @@ export class DevicePage extends Component {
             ).then(response =>{
               let childArr = [];
               response.data.forEach( child => {
-                var temp = {
-                  lat: child.location.lat,
-                  lng: child.location.lng,
-                  name : child.device.name
-                };
-                childArr.push(temp)
+                if(child === null ){
+  
+                }else{
+                  var temp = {
+                    lat: child["lat"] ? child.lat : null,
+                    lng: child["lng"] ? child.lng : null,
+                    name : child.deviceName              
+                  };
+                  childArr.push(temp)
+                }
               })
               let copyOfChildren = [...this.state.childrenWithLocationAndStyles]
               copyOfChildren.push({
@@ -251,6 +257,7 @@ export class DevicePage extends Component {
           breadCrumbDeviceTypes: this.state.breadCrumbDeviceTypes,
           breadCrumbDeviceImages: this.state.breadCrumbDeviceImages,
           breadCrumbDeviceUrlPaths: this.state.breadCrumbDeviceUrlPaths,
+          showWidget : this.state.showWidget,
           baseUrl:  this.state.baseUrl,
           relationParentNames:  this.state.relationParentNames,
           relationChildNames:  this.state.relationChildNames,

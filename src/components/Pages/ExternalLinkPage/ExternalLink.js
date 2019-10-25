@@ -10,9 +10,10 @@ export class ExternalLink extends Component {
     render() {
         return (
             <li className={"text-left ls-none"} style={{"padding" : "6px 0"}}>
-                <a target={"_blank"} className={"links"} href={this.props.itemLink}>
+                <a title={this.props.itemDesc} target={"_blank"} className={"links"} href={this.props.itemLink}>
                     <div className={"links_tooltip categoryContainer"}>
-                       > {this.props.itemName} <span className={"tooltipText"}>{this.props.itemDesc}</span>
+                       > {this.props.itemName} 
+                       {/* <span className={"tooltipText"}>{this.props.itemDesc}</span> */}
                     </div>
                 </a>
             </li>
