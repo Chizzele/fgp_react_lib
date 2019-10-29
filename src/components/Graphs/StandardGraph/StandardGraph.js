@@ -17,9 +17,9 @@ export class StandardGraph extends Component {
                 this.props.graphVersion ? this.props.graphVersion : null
                 ),
             formatters : this.props.timeZone ? new Formatters(this.props.timeZone) : new Formatters(Intl.DateTimeFormat().resolvedOptions().timeZone),
-            id : `sg_${Math.random().toString(36).substr(2, 11)}`
+            id : this.props.id ? this.props.id :`sg_${Math.random().toString(36).substr(2, 11)}`
         }
-        console.log("this props => ", this.props)
+        console.log("Standard Graph Props => ", this.props)
     }
 
     buildConfig(){
@@ -39,13 +39,7 @@ export class StandardGraph extends Component {
                     rangeBar: this.props.rangeBar ? this.props.rangeBar : true,
                     legend: this.state.formatters.legendForAllSeries
                 },
-                entities: [
-                    {
-                        id: this.props.deviceName,
-                        type: this.props.deviceType,
-                        name: this.props.deviceName
-                    }
-                ],
+                entities: this.props.entities,
                 rangeEntity: {
                     id: this.props.deviceName,
                     type: this.props.deviceType,
@@ -88,16 +82,11 @@ export class StandardGraph extends Component {
     render() {
         
         var graphContainer = {
-            height: '300px', 
-            padding: '10px'
+            height: this.props.graphHeight, 
+            padding: this.props.graphPadding
         };
         return (
-            <div className={'container'}>
-                <div id={this.state.id} style={graphContainer}>
-
-                </div>
-
-            </div>
+            <div id={this.state.id} style={graphContainer}></div>
         )
     }
 }

@@ -66,52 +66,111 @@ export class ResultTable extends Component {
 
       // final step is redirection
       if(element["fgpRedirect"]){
-        var link = row.value;
-        // if we want to mutate the redirect link (don't want to mutate the data that gets displayed)
-        if(element["fgpRedirectMutate"]){
-          if(element["fgpRedirectMutateIndex"]){
-            if(this.props.openInNewPage === true){
-              return(
-              <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
-                {processedRow.value}
-              </a>  
-              )
+        // check if the row itself is allowed to redirect based on rules
+        if(element["fgpLimitRedirectAccessor"]){
+          // checks if the column specified is not empty, if it is, do not render a link redirect.
+          if(element.fgpLimitRedirectCriteria === "notEmpty"){
+            if(row.original[element.fgpLimitRedirectAccessor]){
+              var link = row.value;
+              // if we want to mutate the redirect link (don't want to mutate the data that gets displayed)
+              if(element["fgpRedirectMutate"]){
+                if(element["fgpRedirectMutateIndex"]){
+                  if(this.props.openInNewPage === true){
+                    return(
+                    <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
+                      {processedRow.value}
+                    </a>  
+                    )
+                  }else{
+                    return(
+                    <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
+                      {processedRow.value}
+                    </NavLink>
+                    )
+                  }
+                }else{
+                  if(this.props.openInNewPage === true){
+                    return(
+                    <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
+                      {processedRow.value}
+                    </a>                
+                    )
+                  }else{
+                    return(
+                    <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
+                      {processedRow.value}
+                    </NavLink>
+                    )
+                  }
+                }
+              }else{
+                // if the prop is set, open in new tab
+                if(this.props.openInNewPage === true){
+                  return (
+                    <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link}`}>
+                      {processedRow.value}
+                    </a>  
+                  )
+                }else{
+                  return (
+                    <NavLink to={`${element.fgpRedirect}${link}`}>
+                      {processedRow.value}
+                    </NavLink>
+                  )  
+                }
+              }
             }else{
-              return(
-              <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
-                {processedRow.value}
-              </NavLink>
-              )
-            }
-          }else{
-            if(this.props.openInNewPage === true){
-              return(
-              <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
-                {processedRow.value}
-              </a>                
-              )
-            }else{
-              return(
-              <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
-                {processedRow.value}
-              </NavLink>
-              )
+              return (<div> {processedRow.value} </div>)  
             }
           }
         }else{
-          // if the prop is set, open in new tab
-          if(this.props.openInNewPage === true){
-            return (
-              <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link}`}>
-                {processedRow.value}
-              </a>  
-            )
+          var link = row.value;
+          // if we want to mutate the redirect link (don't want to mutate the data that gets displayed)
+          if(element["fgpRedirectMutate"]){
+            if(element["fgpRedirectMutateIndex"]){
+              if(this.props.openInNewPage === true){
+                return(
+                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
+                  {processedRow.value}
+                </a>  
+                )
+              }else{
+                return(
+                <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
+                  {processedRow.value}
+                </NavLink>
+                )
+              }
+            }else{
+              if(this.props.openInNewPage === true){
+                return(
+                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
+                  {processedRow.value}
+                </a>                
+                )
+              }else{
+                return(
+                <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
+                  {processedRow.value}
+                </NavLink>
+                )
+              }
+            }
           }else{
-            return (
-              <NavLink to={`${element.fgpRedirect}${link}`}>
-                {processedRow.value}
-              </NavLink>
-            )  
+            // if the prop is set, open in new tab
+            if(this.props.openInNewPage === true){
+              return (
+                <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link}`}>
+                  {processedRow.value}
+                </a>  
+              )
+            }else{
+              return (
+                <NavLink to={`${element.fgpRedirect}${link}`}>
+                  {processedRow.value}
+                </NavLink>
+              )  
+            }
           }
         }
       }else{

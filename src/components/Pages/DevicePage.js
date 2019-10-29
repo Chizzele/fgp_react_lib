@@ -32,8 +32,8 @@ export class DevicePage extends Component {
 
       relationParentNames: this.props.relationParentNames ? this.props.relationParentNames : [],
       relationChildNames: this.props.relationChildNames ? this.props.relationChildNames : [],
-      childrenWithLocationAndStyles: [],
-      childrenWithLocationAndStylesLoaded : false,
+      childrenWithLocationAndStyles: this.props.childrenWithLocationAndStyles ?  this.props.childrenWithLocationAndStyles : [],
+      childrenWithLocationAndStylesLoaded : this.props.childrenWithLocationAndStyles ? true :  false,
 
       relations: {parents:[], children:[]},
       hasDeviceRelationsLoaded : false,
@@ -76,7 +76,7 @@ export class DevicePage extends Component {
     }else{
       this.setState({
         childrenWithLocationAndStylesLoaded : true,
-        childrenWithLocationAndStyles : [],
+        childrenWithLocationAndStyles : this.props.childrenWithLocationAndStyles ? this.props.childrenWithLocationAndStyles : [],
         hasDeviceRelationsLoaded : true
       });
     }
@@ -187,16 +187,18 @@ export class DevicePage extends Component {
                 "timestamp" : new Date().getTime()
               }
             ).then(response =>{
+              console.log(response)
               let childArr = [];
               response.data.forEach( child => {
-                if(child === null ){
+                if(child === null || !child["location"] === true){
   
                 }else{
                   var temp = {
-                    lat: child["lat"] ? child.lat : null,
-                    lng: child["lng"] ? child.lng : null,
-                    name : child.deviceName              
-                  };
+                    lat: child.location["lat"] ? child.location.lat : child.location["latitude"] ? child.location.latitude: null,
+                    lng: child.location["lng"] ? child.location.lng : child.location["longitude"] ? child.location.longitude: null,
+                    name : child.device.name
+                  }                    
+                  console.log("Temp => ", temp)
                   childArr.push(temp)
                 }
               })
