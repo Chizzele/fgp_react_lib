@@ -15,11 +15,13 @@ import {DeviceWidget} from './components/ExtensionWidgets/DeviceWidget'
 import {DeviceDataRow} from './components/ExtensionWidgets/DeviceDataRow'
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {BasicMapFGP} from './components/Map/BasicMapFGP/BasicMapFGP'
+import {NwpMapFGP} from './components/Map/NwpMapFGP/NwpMapFGP';
 import {MapPopup} from './components/Map/MapPopUp/MapPopup'
 import {Breadcrumbs} from './components/Breadcrumbs/Breadcrumbs'
 import {Breadcrumb} from './components/Breadcrumbs/Breadcrumbs'
 import {FgTabs} from './components/TabWidgets/FgTabs/FgTabs';
 import {StandardGraph} from './components/Graphs/StandardGraph/StandardGraph';
+import {StandardGraphV2} from './components/Graphs/StandardGraphV2/StandardGraphV2';
 import {ChildExtensionList} from './components/TabWidgets/ChildExtensionList/ChildExtensionList';
 import {ExternalLinkPage} from './components/Pages/ExternalLinkPage/ExternalLinkPage'
 import {ExternalLink} from './components/Pages/ExternalLinkPage/ExternalLink'
@@ -27,6 +29,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {FilterSearchRow} from './components/MultiTableFilterSearch/FilterSearchRow/FilterSearchRow';
 import {MultiTableFilterSearch} from './components/MultiTableFilterSearch/MultiTableFilterSearch'
 import {MultiReferenceFilterSearch} from './components/MultiReferenceFilterSearch/MultiReferenceFilterSearch'
+import { DatePickerWrapper } from './components/MultiReferenceFilterSearch/DatePickerWrapper/DatePickerWrapper'
 import Map from 'ol/Map.js';
 import View from 'ol/View.js';
 import 'ol/ol.css';
@@ -75,6 +78,7 @@ export {
     Page,
     DevicePage,
     BasicMapFGP,
+    NwpMapFGP,
     Auth,
     Search,
     FontAwesomeIcon,
@@ -86,7 +90,9 @@ export {
     ChildExtensionList,
     ResultTable,
     StandardGraph,
+    StandardGraphV2,
     MultiTableFilterSearch,
     FilterSearchRow,
-    MultiReferenceFilterSearch
+    MultiReferenceFilterSearch,
+    DatePickerWrapper
   }

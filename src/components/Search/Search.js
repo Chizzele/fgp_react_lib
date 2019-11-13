@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Search.css';
 import { SearchRow } from './searchrow/SearchRow';
+import moment from 'moment'
 import axios from "axios";
 import ResultTable from './resulttable/ResultTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +18,7 @@ export class Search extends Component {
         locationColumns : this.props.searchConfig.locationColumns,
         customer : this.props.searchConfig.customer,
         reference : this.props.searchConfig.reference,
-        defaultQtyRecordsToRetrieve : this.props.searchConfig.defaultQtyRecordsToRetrieve ?  this.props.searchConfig.defaultQtyRecordsToRetrieve : 125,
+        defaultQtyRecordsToRetrieve : this.props.searchConfig.defaultQtyRecordsToRetrieve ?  this.props.searchConfig.defaultQtyRecordsToRetrieve : 250,
         startFrom : this.props.searchConfig.defaultQtyRecordsToRetrieve ? this.props.searchConfig.defaultQtyRecordsToRetrieve : 0,
         searchDirection : this.props.searchConfig.searchDirection ? this.props.searchConfig.searchDirection : "%20asc",
         apiUrl : (this.props.baseApiUrl + this.props.searchConfig.reference),
@@ -161,7 +162,8 @@ export class Search extends Component {
         }else{
           if (_c.searchingColumn !== "all") {                
             // check
-            if (_c.searchingKeyword.indexOf("'") !== -1 || _c.searchingKeyword.indexOf("\"") !== -1) {
+            console.log(_c.searchingKeyword);
+            if (String(_c.searchingKeyword).indexOf("'") !== -1 || String(_c.searchingKeyword).indexOf("\"") !== -1) {
               //escape single and double quotes
               var _tempSearch = _c.searchingKeyword.replace("\"", "\\\"");
               _tempSearch = "\"" + _tempSearch + "\"";
@@ -220,6 +222,14 @@ export class Search extends Component {
     });
   }
 
+  updateDateTime(key, rowKey, value){
+    let ts = moment(value).format("YYYY-MM-DD")
+    let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
+    let temp = [...this.state.searchRows];
+    temp[resultRow][key] = ts
+    this.setState({searchRows: temp})
+  }
+
   updateKeyword(key, rowKey, value) {
     let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
     let temp = [...this.state.searchRows];
@@ -235,10 +245,30 @@ export class Search extends Component {
   }
 
   updateSearchingType(key, rowKey, value) {
+    
     let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
     let temp = [...this.state.searchRows];
     temp[resultRow][key] = value.target.value
     this.setState({searchRows: temp})
+  }
+
+  dynamicResultFunction(pageIndex, pageSize){
+    console.log(arguments, "pagination server side not implemented in this release")
+    let initialData = 125;
+    let initialSize = 25;
+    let initialPages = 5;
+
+    let amountOfDataToRetrieve = pageSize * 5;
+    
+  }
+
+  dynamicResultFunctionPage(){
+    console.log(arguments, "pagination server side not implemented in this release")
+    // let initialData = 125;
+    // let initialSize = 25;
+    // let initialPages = 5;
+
+    
   }
 
 
@@ -267,8 +297,10 @@ export class Search extends Component {
                         updateKeyword={this.updateKeyword.bind(this , 'searchingKeyword', row.indexKey )}                  
                         updateSearchingType={this.updateSearchingType.bind(this , 'searchingType', row.indexKey )}                  
                         updateSearchingColumn={this.updateSearchingColumn.bind(this , 'searchingColumn', row.indexKey )}                  
+                        updateDateTime={this.updateDateTime.bind(this , 'searchingKeyword', row.indexKey )}                  
                         makeSearch={this.makeSearch}
                         searchingTypes={this.props.searchConfig.searchingTypes} 
+                        dateSearchingTypes={this.props.searchConfig.dateSearchingTypes ? this.props.searchConfig.dateSearchingTypes : [{"key": "<?","label": "Less Than"},{"key": ">?","label": "Greater Than"}] } 
                         searchingColumns={this.props.searchConfig.searchingColumns} 
                         isFirst={row.isFirst}
                       />)
@@ -288,6 +320,9 @@ export class Search extends Component {
               filterable={this.props.filterableResults}
               redirectTo={this.props.redirectTo}
               openInNewPage={this.props.openInNewPage}
+              hasResultMap={this.props.hasResultMap === true ? this.props.hasResultMap : false}
+              dynamicResultFunction={this.dynamicResultFunction.bind(this)}
+              dynamicResultFunctionPage={this.dynamicResultFunctionPage.bind(this)}
             />
             ) : 
             <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>

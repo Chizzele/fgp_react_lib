@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './SearchRow.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { DatePickerWrapper } from '../../MultiReferenceFilterSearch/DatePickerWrapper/DatePickerWrapper';
+import moment from 'moment'
 export class SearchRow extends Component {
   constructor(props){
     super(props);
@@ -9,7 +10,7 @@ export class SearchRow extends Component {
    
     };
     // this.updateKeyword = this.updateKeyword.bind(this);
-    // console.log("my state:" , this.state)
+    console.log('Hey I am the search row props', this.props)
   }
 
   render() {
@@ -26,21 +27,50 @@ export class SearchRow extends Component {
             }
           </select>
         </div>
-        <div className={"col-md-3 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer"}>
-          <select className="form-control " value={this.props.searchingType} onChange={this.props.updateSearchingType}>
-            {
-              this.props.searchingTypes.map((option, i) => {
-                return (
-                  <option key={i} value={option.key}>{option.label}</option>
-                )
-              })
-            }
-          </select>
-        </div>
-        <div className={"col-md-4 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
-          <input className="form-control" placeholder="Keyword..." value={this.props.searchingKeyword} onChange={this.props.updateKeyword}>
-          </input>
-        </div>
+        {
+          this.props.searchingColumns[this.props.searchingColumns.findIndex( row => row.column === this.props.searchingColumn )]["isTs"] === true ? (
+              <div className={"col-md-3 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer"}>
+                <select className="form-control " value={this.props.searchingType} onChange={this.props.updateSearchingType}>
+                  {
+                    this.props.dateSearchingTypes.map((option, i) => {
+                      return (
+                        <option key={i} value={option.key}>{option.label}</option>
+                        )
+                      })
+                  }
+                </select>
+              </div>              
+            ):(
+              <div className={"col-md-3 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer"}>
+                <select className="form-control " value={this.props.searchingType} onChange={this.props.updateSearchingType}>
+                  {
+                    this.props.searchingTypes.map((option, i) => {
+                      return (
+                        <option key={i} value={option.key}>{option.label}</option>
+                        )
+                      })
+                  }
+                </select>
+              </div>              
+            )
+        }
+
+        {
+          this.props.searchingColumns[this.props.searchingColumns.findIndex( row => row.column === this.props.searchingColumn )]["isTs"] === true ? (
+
+            <DatePickerWrapper
+              customClasses={" col-md-4 col-12 d-md-inline-flex align-items-center"}
+              date={this.props.searchingKeyword}
+              handleChange={this.props.updateDateTime}
+            />
+            )  : (
+            <div className={"col-md-4 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
+              <input className="form-control" placeholder="Keyword..." value={this.props.searchingKeyword} onChange={this.props.updateKeyword}>
+              </input>
+            </div>   
+          ) 
+        }
+        
           <div className="d-inline-flex align-items-center col-12 col-md-2 "> 
           { 
             this.props.isFirst === true ? (

@@ -64,7 +64,7 @@ React Library Guide </h1>
     < RouteWrap > <br>
     &nbsp;&nbsp;< Page  >
     <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;< Navigation />
+    &nbsp;&nbsp;< Navigation />
     <br>
     &nbsp;&nbsp;</ Page >
     <br>

@@ -5,19 +5,22 @@ import "react-table/react-table.css";
 import { NavLink} from 'react-router-dom' ;
 import Moment from 'react-moment';
 import moment from 'moment';
+import { BasicMapFGP } from '../../Map/BasicMapFGP/BasicMapFGP'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import axios from "axios";
 
 export class ResultTable extends Component {
   constructor(props){
     super(props);
     this.state = {
-
+      mapVisible : false
     };  
     // console.log(this.props)
     this.buildData = this.buildData.bind(this);
     this.buildColumns = this.buildColumns.bind(this);
 
     this.mutationHandler = this.mutationHandler.bind(this);
+    this.toggleMap = this.toggleMap.bind(this);
   }
 
   buildData(data){
@@ -44,7 +47,7 @@ export class ResultTable extends Component {
           processedRow.value = row.value.split(element.fgpValueMutate)[0];
         }
       }
-
+      
       // formatting mutations
       if(element["fgpMutate"]){
         if(element.fgpMutate === "date"){
@@ -78,13 +81,13 @@ export class ResultTable extends Component {
                   if(this.props.openInNewPage === true){
                     return(
                     <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
-                      {processedRow.value}
+                       {String(processedRow.value)}
                     </a>  
                     )
                   }else{
                     return(
                     <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
-                      {processedRow.value}
+                       {String(processedRow.value)}
                     </NavLink>
                     )
                   }
@@ -92,13 +95,13 @@ export class ResultTable extends Component {
                   if(this.props.openInNewPage === true){
                     return(
                     <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
-                      {processedRow.value}
+                       {String(processedRow.value)}
                     </a>                
                     )
                   }else{
                     return(
                     <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
-                      {processedRow.value}
+                       {String(processedRow.value)}
                     </NavLink>
                     )
                   }
@@ -108,19 +111,19 @@ export class ResultTable extends Component {
                 if(this.props.openInNewPage === true){
                   return (
                     <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link}`}>
-                      {processedRow.value}
+                       {String(processedRow.value)}
                     </a>  
                   )
                 }else{
                   return (
                     <NavLink to={`${element.fgpRedirect}${link}`}>
-                      {processedRow.value}
+                       {String(processedRow.value)}
                     </NavLink>
                   )  
                 }
               }
             }else{
-              return (<div> {processedRow.value} </div>)  
+              return (<div>  {String(processedRow.value)} </div>)  
             }
           }
         }else{
@@ -131,13 +134,13 @@ export class ResultTable extends Component {
               if(this.props.openInNewPage === true){
                 return(
                 <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
-                  {processedRow.value}
+                  {String(processedRow.value)}
                 </a>  
                 )
               }else{
                 return(
                 <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[element.fgpRedirectMutateIndex]}`}>
-                  {processedRow.value}
+                  {String(processedRow.value)}
                 </NavLink>
                 )
               }
@@ -145,13 +148,13 @@ export class ResultTable extends Component {
               if(this.props.openInNewPage === true){
                 return(
                 <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
-                  {processedRow.value}
+                  {String(processedRow.value)}
                 </a>                
                 )
               }else{
                 return(
                 <NavLink to={`${element.fgpRedirect}${link.split(element.fgpRedirectMutate)[0]}`}>
-                  {processedRow.value}
+                  {String(processedRow.value)}
                 </NavLink>
                 )
               }
@@ -161,23 +164,46 @@ export class ResultTable extends Component {
             if(this.props.openInNewPage === true){
               return (
                 <a target={"_blank"} href={`${window.location.origin}${element.fgpRedirect}${link}`}>
-                  {processedRow.value}
+                  {String(processedRow.value)}
                 </a>  
               )
             }else{
               return (
                 <NavLink to={`${element.fgpRedirect}${link}`}>
-                  {processedRow.value}
+                  {String(processedRow.value)}
                 </NavLink>
               )  
             }
           }
         }
+      // redirect the whole row (the fgpRedirectRow variable will consist of a string like this, you should know the properties from your config of the search)
+      // example of a fgpRedirectRow config is 
+      // fgpRedirectRow : "/icp/"
+      // fgpRedirectRowPath : "accessor1->accessor2->accessor3"
+      }else if(element["fgpRedirectRow"]){
+        let path = new String;
+        let accessorArr = element.fgpRedirectRowPath.split("->");
+        accessorArr.forEach( accessor => {
+          path += "/" +  row.original[accessor]
+        });
+        if(this.props.openInNewPage === true){
+          return (
+            <a target={"_blank"} href={`${window.location.origin}/${element.fgpRedirectRow}${path}`}>
+              {String(processedRow.value)}
+            </a>  
+          )
+        }else{
+          return (
+            <NavLink to={`${element.fgpRedirectRow}${path}`}>
+              {String(processedRow.value)}
+            </NavLink>
+          )  
+        }
       }else{
-        return(<div> {processedRow.value} </div>)  
+        return(<div> {String(processedRow.value)} </div>)  
       }
     }else{
-      return(<div> {processedRow.value} </div>)
+      return(<div> {String(processedRow.value)} </div>)
     }
   }
 
@@ -199,16 +225,39 @@ export class ResultTable extends Component {
       
   }
   
+  toggleMap(){
+    this.setState({
+      mapVisible : !this.state.mapVisible
+    })
+    console.log('toggled', this.state.mapVisible)
+  }
   
   render() {
     const filterCaseInsensitive = ({ id, value }, row) => 
-      row[id] ? row[id].toLowerCase().includes(value.toLowerCase()) : true
-    
+      row[id] ? row[id].toLowerCase() .includes(value.toLowerCase()) : true
 
-    console.log("default sizw", this.props.defaultPageSize)
     return (
       <div className="ResultTable">
-        <span className="ResultTable-title">{this.props.title}</span>
+        {/* <span className="ResultTable-title">{this.props.title}</span> */}
+        {this.props.hasResultMap === true ? (
+          <div style={{"width": "100%"}}> 
+            <button className="btn btn-secondary" style={{"margin":"0 auto", "position" : "relative", "bottom" : "17.5px", "width" : "fit-content"}} onClick={this.toggleMap}>
+              <FontAwesomeIcon className="" icon={["fas", "map"]}/>
+            </button>
+          </div> 
+        ) : (
+          ""
+        )
+        }
+        {
+          this.state.mapVisible === true ? (
+            <div className={"fgpPopoverGraph"}>
+              <BasicMapFGP 
+
+              />
+            </div>
+          ) : ""
+        }
         <ReactTable 
             showPagination={this.props.showPagination}
             showPageSizeOptions={this.props.showPageSizeOptions}
@@ -220,12 +269,14 @@ export class ResultTable extends Component {
             defaultPageSize={this.props.defaultPageSize ? this.props.defaultPageSize : 25}
             pageSizeOptions={this.props.defaultRowSizeArray}
             defaultFilterMethod={filterCaseInsensitive}
-            // onPageChange={(pageIndex) => {
-            //   console.log("pageindex = ",pageIndex)
-            // }}
-            // onPageSizeChange={(pageSize,pageIndex) => {
-            //   console.log("pagesize = ", pageIndex, "pageindex = ", pageSize, state)
-            // }}
+            onPageChange={(pageSize,pageIndex) => {
+              console.log("pagesize = ", pageIndex, "pageindex = ", pageSize)
+              this.props.dynamicResultFunctionPage(pageIndex)
+            }}
+            onPageSizeChange={(pageSize,pageIndex) => {
+              console.log("pagesize = ", pageIndex, "pageindex = ", pageSize)
+              this.props.dynamicResultFunction(pageSize,pageIndex)
+            }}
         />
       </div>
   )}

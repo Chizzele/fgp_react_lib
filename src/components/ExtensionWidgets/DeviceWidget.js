@@ -163,8 +163,15 @@ export class DeviceWidget extends Component {
                                             mapProjection={this.props.mapProjection}
                                             featuresParent={{
                                                 deviceName: this.props.deviceName,
-                                                lat: this.props.extensions["location"] ? this.props.extensions.location.lat : null ,
-                                                lng: this.props.extensions["location"] ? this.props.extensions.location.lng : null
+                                                lat: this.props.extensions["location"] ? 
+                                                    this.props.extensions.location["lat"] ?
+                                                        this.props.extensions.location.lat : this.props.extensions.location["latitude"] ? 
+                                                            this.props.extensions.location.latitude : null : 
+                                                        null ,
+                                                lng : this.props.extensions["location"] ? this.props.extensions.location["lng"] ? 
+                                                    this.props.extensions.location.lng : this.props.extensions.location["longitude"] ? 
+                                                        this.props.extensions.location.longitude : null : 
+                                                    null
                                             }}
                                             featuresParentStyles={{
                                                 label : this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing),

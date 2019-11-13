@@ -8,7 +8,7 @@ export class DevicePage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      deviceName : window.location.href.split('/')[window.location.href.split('/').length-1],
+      deviceName : window.location.pathname.split('/')[2],
       deviceType : this.props.deviceType,
       childDeviceNames : [],
 
@@ -16,7 +16,7 @@ export class DevicePage extends Component {
 
       mapType: this.props.mapType ? this.props.mapType : "none",
       mapProjection: this.props.mapProjection ? this.props.mapProjection : "EPSG:4326",
-      mapParentColors: this.props.mapParentColors ? this.props.mapParentColors : {fillColor: "lightblue", borderColor : "blue"},
+      mapParentColors: this.props.mapParentColors ? this.props.mapParentColors : {fillColor: "pink", borderColor : "red"},
       mapChildrenColors: this.props.mapChildrenColors ? this.props.mapChildrenColors : [{fillColor: "lightblue", borderColor : "blue"}, {fillColor: "lightyellow", borderColor : "yellow"}, {fillColor: "lightgreen", borderColor : "green"}, {fillColor: "lightslategray", borderColor : "purple"}, {fillColor: "lightsalmon", borderColor : "orange"}],
 
       breadCrumbPath: this.props.breadCrumbPath ? this.props.breadCrumbPath : null,

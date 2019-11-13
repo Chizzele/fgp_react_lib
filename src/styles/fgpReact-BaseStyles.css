@@ -189,3 +189,10 @@ html, body {
   .ls-none{
     list-style: none;
   }
+  .ResultTable .ReactTable .rt-td {
+    overflow: visible !important;
+  }
+
+  .react-tabs__tab{
+    font-size: 16px !important;
+  }

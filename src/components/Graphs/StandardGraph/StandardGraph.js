@@ -14,6 +14,7 @@ export class StandardGraph extends Component {
                 this.props.baseUrl, 
                 this.props.backUpInterval,
                 this.props.backupFields,
+                this.props.backupEntities,
                 this.props.graphVersion ? this.props.graphVersion : null
                 ),
             formatters : this.props.timeZone ? new Formatters(this.props.timeZone) : new Formatters(Intl.DateTimeFormat().resolvedOptions().timeZone),

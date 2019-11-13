@@ -10,11 +10,11 @@ export default class DataService {
     };
 
     fetchFirstNLast(ids, interval, fields) {
-        console.log("DATA SERVICE LOGGING : Fetch First N Last > ")
-        console.log("IDS => ", ids)
-        console.log("INTERVAL => ", interval)
-        console.log("FIELDS => ", fields)
-
+        if(ids[0] === undefined || ids[0] === null){
+            ids = this.backupEntities;
+        }else{
+            this.backupEntities = ids
+        }
         if(interval){
             this.backUpInterval = interval
         }else{
@@ -25,6 +25,10 @@ export default class DataService {
         }else{
             fields = this.backupFields
         }
+        console.log("DATA SERVICE LOGGING : Fetch First N Last > ")
+        console.log("IDS => ", ids)
+        console.log("INTERVAL => ", interval)
+        console.log("FIELDS => ", fields)
         return new Promise((resolve, reject) => {
             axios.get(`${this.baseUrl}${this.deviceType}/${interval}/${ids[0]}/first-last`)
             .then(res => { 
@@ -38,12 +42,11 @@ export default class DataService {
          
     };
     fetchdata (ids, interval, range, fields) {
-        console.log("DATA SERVICE LOGGING : Fetch Data > ")
-        console.log("IDS => ", ids)
-        console.log("INTERVAL => ", interval)
-        console.log("FIELDS => ", fields)
-        console.log("RANGE => ", range)
-
+        if(ids[0] === undefined || ids[0] === null){
+            ids = this.backupEntities;
+        }else{
+            this.backupEntities = ids
+        }
         if(interval){
             this.backUpInterval = interval
         }else{
@@ -54,6 +57,12 @@ export default class DataService {
         }else{
             fields = this.backupFields
         }
+        console.log("DATA SERVICE LOGGING : Fetch Data > ")
+        console.log("IDS => ", ids)
+        console.log("INTERVAL => ", interval)
+        console.log("FIELDS => ", fields)
+        console.log("RANGE => ", range)
+
         if(this.version === "wel"){
             return new Promise((resolve, reject) => {
                 axios.post(`${this.baseUrl}${this.deviceType}/${interval}`,
@@ -77,11 +86,11 @@ export default class DataService {
         }else{
             return new Promise((resolve, reject) => {
                 axios.post(`${this.baseUrl}${this.deviceType}/${interval}`,
-               {data : {
+               {
                     "start" : parseInt(range.start),
                     "end" : parseInt(range.end),
                     "devices": [ids[0]]
-                }},
+                },
                 {headers: {
                     'Content-Type': 'application/json',
                 }})
