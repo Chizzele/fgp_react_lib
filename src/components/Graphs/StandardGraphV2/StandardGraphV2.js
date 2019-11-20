@@ -65,6 +65,7 @@ export class StandardGraphV2 extends Component {
                     threshold: { min: 0, max: 1000 * 60 * 60 * 24 * 400 }, //  0 ~ 2 days
                     yLabel: 'Voltage',
                     initScales: { left: { min: 150, max: 300 }},
+                    globalDateWindow : this.props.globalDateWindow ? this.props.globalDateWindow : [moment().tz('Australia/Melbourne').subtract(10, 'days').startOf('day').valueOf(), moment().tz('Australia/Melbourne').startOf('day').valueOf()],
                     fill: false
                 }
             ],
@@ -145,7 +146,14 @@ export class StandardGraphV2 extends Component {
                     dataService: dataService,
                     show: config.show,
                     ranges: config.graphConfig.ranges,
-                    initRange: config.graphConfig.initRange,
+                    initRange: this.props.globalDateWindow ? (
+                        {
+                            start : this.props.globalDateWindow[0],
+                            end : this.props.globalDateWindow[1],
+                        }
+                    ) : (
+                        config.graphConfig.initRange
+                    ),
                     interaction: config.graphConfig.interaction,
                     timezone: config.graphConfig.timezone
                 };
@@ -163,6 +171,7 @@ export class StandardGraphV2 extends Component {
             childGraphPropertiesArray.forEach( graphConfig => {
                 var childGraphViewConfigs = []
                 graphConfig.viewConfigs.forEach( viewConfig =>{
+                    let dateTime = viewConfig.graphConfig.initRange
                     var graphConf = {
                         name: viewConfig.name,
                         graphConfig: {
@@ -180,14 +189,19 @@ export class StandardGraphV2 extends Component {
                         dataService: dataService,
                         show: viewConfig.show === false ? false : true,
                         ranges: viewConfig.graphConfig.ranges,
-                        initRange: viewConfig.graphConfig.initRange,
+                        initRange: this.props.globalDateWindow ? (
+                            {
+                                start : this.props.globalDateWindow[0],
+                                end : this.props.globalDateWindow[1],
+                            }
+                        ) : (
+                            dateTime
+                        ),
                         interaction: viewConfig.graphConfig.interaction,
                         timezone: viewConfig.graphConfig.timezone
                     };
-                    console.log('heres the conf', graphConf)
                     childGraphViewConfigs.push(graphConf)
                 })
-                console.log('got here ?')
                 var graphX = new FgpGraph(document.getElementById(graphConfig.id), childGraphViewConfigs);
                 graphX.initGraph();
                 childGraphArray.push(graphX)

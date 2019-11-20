@@ -8,7 +8,7 @@ export class DevicePage extends Component {
   constructor(props){
     super(props);
     this.state = {
-      deviceName : window.location.pathname.split('/')[2],
+      deviceName : this.props.deviceNameOverride ? this.props.deviceNameOverride : window.location.pathname.split('/')[2],
       deviceType : this.props.deviceType,
       childDeviceNames : [],
 
@@ -24,6 +24,9 @@ export class DevicePage extends Component {
       breadCrumbDeviceTypes: this.props.breadCrumbDeviceTypes,
       breadCrumbDeviceImages: this.props.breadCrumbDeviceImages,
       breadCrumbDeviceUrlPaths: this.props.breadCrumbDeviceUrlPaths,
+
+
+      lookupKey : this.props.lookupKey ? this.props.lookupKey : "name",
 
       showWidget : this.props.showWidget ? this.props.showWidget : "show",
       
@@ -96,7 +99,7 @@ export class DevicePage extends Component {
 
   fetchExtensions(){
     
-    axios.post(`${this.state.baseUrl}${this.state.deviceType}/name/${this.state.deviceName}`,{
+    axios.post(`${this.state.baseUrl}${this.state.deviceType}/${this.state.lookupKey}/${this.state.deviceName}`,{
       "extensions" : this.state.extensionNames
     }).then( response => {
       this.setState({
@@ -269,6 +272,7 @@ export class DevicePage extends Component {
           extensionNames:  this.state.extensionNames,
           extensions:  this.state.extensions,
           childDeviceNames: this.state.childDeviceNames,
+          lookupKey : this.state.lookupKey,
           mapInteractions : this.props.mapInteractions ? this.props.mapInteractions : []
         }))
       }else{

@@ -53,15 +53,21 @@ export class ResultTable extends Component {
         if(element.fgpMutate === "date"){
           if(element["fgpMutateConfig"]){
             processedRow.value = moment(row.value).format(element.fgpMutateConfig)
-          //format to lll  
+          
           }else{
             processedRow.value = moment(row.value).format("lll")
           }
         }else if(element.fgpMutate === "round"){  
           if(element["fgpMutateConfig"]){
             processedRow.value = Math.round((row.value * Math.pow(10, element.fgpMutateConfig))) / Math.pow(10, element.fgpMutateConfig);
+            if(element["fgpAdditionalSymbol"]){
+              processedRow.value = `${processedRow.value * 100}${element.fgpAdditionalSymbol}`
+            }
           }else{
             processedRow.value = Math.round(row.value);
+            if(element["fgpAdditionalSymbol"]){
+              processedRow.value = `${(processedRow.value * 100)}${element.fgpAdditionalSymbol}`
+            }
           }
         }
       }
@@ -203,7 +209,7 @@ export class ResultTable extends Component {
         return(<div> {String(processedRow.value)} </div>)  
       }
     }else{
-      return(<div> {String(processedRow.value)} </div>)
+      return(<div> {String("")} </div>)
     }
   }
 

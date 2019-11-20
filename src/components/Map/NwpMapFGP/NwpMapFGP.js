@@ -355,6 +355,7 @@ export class NwpMapFGP extends Component {
         let tmpParents = [...this.state.parentDevices];
         tmpParents.push(specialParentSwapStyle);
         this.props.destinationFeatures.forEach(destinationFeature => {
+          console.log('desitnation feature before', destinationFeature)
           // creating a geoJSON each time for the parent
           var geojsonObjectParentTarget = {
             'type': 'FeatureCollection',
@@ -386,6 +387,7 @@ export class NwpMapFGP extends Component {
             // Removing the push of children so that you get the center between two parents
             // points[0].push([feature.lng, feature.lat])
             geojsonObjectChildrenTarget.features.push(featureObj)
+            console.log('feature Obj after')
           })
   
           // creating the parent target feature
@@ -504,7 +506,6 @@ export class NwpMapFGP extends Component {
         // binding the on click handler
         map.on('click', this.handleMapClick.bind(this, map))
         // making sure its the right dimension
-        map.updateSize() 
       }else{
         var map = new Map({
           controls: defaultControls().extend([
@@ -518,8 +519,8 @@ export class NwpMapFGP extends Component {
             projection: 'EPSG:4326'
           })
         });
-        map.updateSize() 
       }
+      map.updateSize() 
     }
 
     handleMapClick(map, event){

@@ -169,6 +169,7 @@ export class BasicMapFGP extends Component {
               return styles[feature.getGeometry().getType()];
             };
             this.props.featuresChildren[x].children.forEach( child =>{
+              console.lof('plotting child', child)
               // console.log(child)
               let featureObj = {
                 'type' : "Feature",
@@ -258,7 +259,7 @@ export class BasicMapFGP extends Component {
         this.props.featuresParent.lng !== null && this.props.featuresParent.lat !== null){
           points.push([this.props.featuresParent.lng, this.props.featuresParent.lat])
           geojsonObjectParent.features.push(featureObjParent)
-          console.log('pushing despite null')
+          console.log('pushing despite null', featureObjParent)
         }
         
         
