@@ -9,6 +9,7 @@ export class DevicePage extends Component {
     super(props);
     this.state = {
       deviceName : this.props.deviceNameOverride ? this.props.deviceNameOverride : window.location.pathname.split('/')[2],
+      deviceNameAsMeterLookup : this.props.deviceNameAsMeterLookup ? this.props.deviceNameAsMeterLookup : false,
       deviceType : this.props.deviceType,
       childDeviceNames : [],
 
@@ -62,10 +63,14 @@ export class DevicePage extends Component {
     };
     this.fetchExtensions = this.fetchExtensions.bind(this);
     this.fetchRelations = this.fetchRelations.bind(this);
+    this.getDeviceNameAsMeterLookup = this.getDeviceNameAsMeterLookup.bind(this);
     this.allResolved = this.allResolved.bind(this);
   }
 
   componentDidMount(){
+    if(this.state.deviceNameAsMeterLookup){
+      this.getDeviceNameAsMeterLookup();
+    }
     if(this.props.extensionNames){
       this.fetchExtensions()
     }else{
@@ -87,6 +92,16 @@ export class DevicePage extends Component {
 
   componentDidUpdate(){
     // this.allResolved();  
+  }
+
+  getDeviceNameAsMeterLookup(){
+    axios.get(
+      `${this.state.baseUrl}${this.state.deviceType}/${this.state.lookupKey}/${this.state.deviceName}`
+    ).then(resp => {
+      this.setState({
+        deviceNameAsMeterLookup : resp.data.description
+      })
+    })
   }
 
   allResolved(){
@@ -273,6 +288,7 @@ export class DevicePage extends Component {
           extensions:  this.state.extensions,
           childDeviceNames: this.state.childDeviceNames,
           lookupKey : this.state.lookupKey,
+          deviceNameAsMeterLookup : this.state.deviceNameAsMeterLookup,
           mapInteractions : this.props.mapInteractions ? this.props.mapInteractions : []
         }))
       }else{

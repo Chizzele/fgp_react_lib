@@ -12,8 +12,8 @@ export class MultiTableFilterSearch extends Component {
     this.state = {
       hasLoaded : false,
       data : [],
-      fromDate: moment().subtract(7, 'd').startOf('day').valueOf(),
-      toDate: moment().startOf('day').valueOf(),
+      fromDate: this.props.fromDate ? this.props.fromDate :  moment().subtract(7, 'd').startOf('day').valueOf(),
+      toDate: this.props.toDate ? this.props.toDate : moment().startOf('day').valueOf(),
       currentTable : this.props.searchingTables[0].isTs === true ? 
         `${this.props.searchingTables[0].deviceType}/${this.props.searchingTables[0].tableName}` :
         `${this.props.searchingTables[0].deviceType}/${this.props.searchingTables[0].tableName}|nts`,

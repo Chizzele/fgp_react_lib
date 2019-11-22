@@ -64,18 +64,17 @@ export class SearchRow extends Component {
               handleChange={this.props.updateDateTime}
             />
             )  : (
-            <div className={"col-md-4 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
+            <div className={"col-md-3 col-12 d-md-inline-flex align-items-center fgReact_searchInputContainer "}>
               <input className="form-control" placeholder="Keyword..." value={this.props.searchingKeyword} onChange={this.props.updateKeyword}>
               </input>
             </div>   
           ) 
         }
         
-          <div className="d-inline-flex align-items-center col-12 col-md-2 "> 
+          <div className="d-inline-flex align-items-center col-12 col-md-3 "> 
           { 
             this.props.isFirst === true ? (
-                
-                  <button className="btn btn-secondary" style={{"marginRight":"20px"}} onClick={this.props.addSearchCriteria}>
+                  <button className="btn btn-secondary" style={{"marginRight":"10px"}} onClick={this.props.addSearchCriteria}>
                     <FontAwesomeIcon className="" icon={["fas", "plus"]}/>
                   </button> 
               ) 
@@ -87,9 +86,20 @@ export class SearchRow extends Component {
             }
           { 
             this.props.isFirst === true ? (
-                  <button className="btn btn-primary" onClick={this.props.makeSearch}>
-                  <FontAwesomeIcon className="" icon={["fas", "search"]}/>
-                  </button>
+                  <div style={{"display" : "contents"}}>
+                    <button className="btn btn-primary" onClick={this.props.makeSearch}>
+                        <FontAwesomeIcon className="" icon={["fas", "search"]}/>
+                    </button>
+                    {
+                      this.props.hasResultMap === true ? (
+                        <button className="btn btn-secondary" style={{"marginLeft":"10px"}} onClick={this.props.toggleMap}>
+                          <FontAwesomeIcon className="" icon={["fas", "map"]}/>
+                        </button>                         
+                      ) : (
+                        ""
+                      )
+                    }
+                  </div>  
               ) 
               : (
                 ""

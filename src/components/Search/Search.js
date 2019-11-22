@@ -23,7 +23,8 @@ export class Search extends Component {
         searchDirection : this.props.searchConfig.searchDirection ? this.props.searchConfig.searchDirection : "%20asc",
         apiUrl : (this.props.baseApiUrl + this.props.searchConfig.reference),
         hz : this.props.searchConfig.hz,
-        map : this.props.searchConfig.map
+        map : this.props.searchConfig.map,
+        mapVisible : false
       },
       searchRows : [
         { searchingType : this.props.defaultSearchType,
@@ -38,6 +39,7 @@ export class Search extends Component {
     // console.log(this.props)
     this.addSearchCriteria = this.addSearchCriteria.bind(this);
     this.removeSearchCriteria = this.removeSearchCriteria.bind(this);
+    this.toggleMap = this.toggleMap.bind(this);
     this.makeSearch = this.makeSearch.bind(this);
   }
 
@@ -222,6 +224,13 @@ export class Search extends Component {
     });
   }
 
+  toggleMap(){
+    this.setState({
+      mapVisible : !this.state.mapVisible
+    })
+    console.log('toggled', this.state.mapVisible)
+  }
+
   updateDateTime(key, rowKey, value){
     let ts = moment(value).format("YYYY-MM-DD")
     let resultRow = this.state.searchRows.findIndex(p => p.indexKey === rowKey);
@@ -303,6 +312,8 @@ export class Search extends Component {
                         dateSearchingTypes={this.props.searchConfig.dateSearchingTypes ? this.props.searchConfig.dateSearchingTypes : [{"key": "<?","label": "Less Than"},{"key": ">?","label": "Greater Than"}] } 
                         searchingColumns={this.props.searchConfig.searchingColumns} 
                         isFirst={row.isFirst}
+                        hasResultMap={this.props.hasResultMap === true ? this.props.hasResultMap : false}
+                        toggleMap={this.toggleMap}
                       />)
                   })
                 }
@@ -321,8 +332,14 @@ export class Search extends Component {
               redirectTo={this.props.redirectTo}
               openInNewPage={this.props.openInNewPage}
               hasResultMap={this.props.hasResultMap === true ? this.props.hasResultMap : false}
+              latColumn={this.props.latColumn ? this.props.latColumn : false}
+              lngColumn={this.props.lngColumn ? this.props.lngColumn : false}
+              mapDeviceColumnName={this.props.mapDeviceColumnName ? this.props.mapDeviceColumnName : false}
               dynamicResultFunction={this.dynamicResultFunction.bind(this)}
               dynamicResultFunctionPage={this.dynamicResultFunctionPage.bind(this)}
+              mapProjection={this.props.mapProjection ? this.props.mapProjection : "EPSG:4326"}
+              mapInteractions={this.props.mapInteractions ? this.props.mapInteractions : []} 
+              mapVisible={this.state.mapVisible}
             />
             ) : 
             <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>

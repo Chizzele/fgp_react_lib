@@ -13,25 +13,65 @@ export class ResultTable extends Component {
   constructor(props){
     super(props);
     this.state = {
-      mapVisible : false
+      columnsReady : false,
+      columns : [],
+      mapData : [],
+      dataReady : false, 
+      mapReady : false,
+      data:[]
     };  
     // console.log(this.props)
     this.buildData = this.buildData.bind(this);
     this.buildColumns = this.buildColumns.bind(this);
 
     this.mutationHandler = this.mutationHandler.bind(this);
-    this.toggleMap = this.toggleMap.bind(this);
+    // this.toggleMap = this.toggleMap.bind(this);
+  }
+
+  componentDidMount(){
+    this.buildData(this.props.data)
+    this.buildColumns(this.props.columns)
   }
 
   buildData(data){
-    data.forEach(element => {
-      // element["Cell"] = "hello world"
-    });
-    return data;
+    if(this.props.hasResultMap === true){
+      var locationArray = [{
+        deviceType : "meter",
+        style : {
+          fillColor : "blue",
+          fillColor : "lightblue"
+        },
+        children : []
+      }]
+      // building up the map data
+      data.forEach(element => {
+        locationArray[0].children.push(
+          {
+            lat: element[`${this.props.latColumn}`],
+            lng: element[`${this.props.lngColumn}`],
+            name : element[`${this.props.mapDeviceColumnName}`],
+            style : {
+              fillColor : "blue",
+              fillColor : "lightblue"
+            },
+            type : "Device ID"
+          }
+        )
+      });
+    }
+    this.setState({
+      mapData : locationArray,
+      dataReady : true, 
+      data : data,
+      mapReady : true
+    })
   }
+
+    
 
   // mutates each row of data to present how we want it, returns a row after processing
   mutationHandler(element, row){
+    // then we want to collect data along the way
     let processedRow = {...row};
     // mutating the value
     // ensuring we have a split-able value 
@@ -189,8 +229,8 @@ export class ResultTable extends Component {
       }else if(element["fgpRedirectRow"]){
         let path = new String;
         let accessorArr = element.fgpRedirectRowPath.split("->");
-        accessorArr.forEach( accessor => {
-          path += "/" +  row.original[accessor]
+        accessorArr.forEach( (accessor, i) => {
+            path += row.original[accessor] +  "/" 
         });
         if(this.props.openInNewPage === true){
           return (
@@ -218,25 +258,22 @@ export class ResultTable extends Component {
     // console.log(data)
     if(this.props.ignoreBuildCols){
     }else{
-      data.forEach(element => {
-        element["Cell"] = row => (
-          this.mutationHandler(element, row)
-        )
-      });  
+        data.forEach(element => {
+          element["Cell"] = row => (
+            this.mutationHandler(element, row)
+          )
+        });  
     }
-    return data;
+    this.setState({
+      columns : data,
+      columnsReady : true
+    })
   }
 
   HandlePagination(){
       
   }
-  
-  toggleMap(){
-    this.setState({
-      mapVisible : !this.state.mapVisible
-    })
-    console.log('toggled', this.state.mapVisible)
-  }
+
   
   render() {
     const filterCaseInsensitive = ({ id, value }, row) => 
@@ -245,45 +282,65 @@ export class ResultTable extends Component {
     return (
       <div className="ResultTable">
         {/* <span className="ResultTable-title">{this.props.title}</span> */}
-        {this.props.hasResultMap === true ? (
-          <div style={{"width": "100%"}}> 
-            <button className="btn btn-secondary" style={{"margin":"0 auto", "position" : "relative", "bottom" : "17.5px", "width" : "fit-content"}} onClick={this.toggleMap}>
-              <FontAwesomeIcon className="" icon={["fas", "map"]}/>
-            </button>
-          </div> 
-        ) : (
-          ""
-        )
-        }
         {
-          this.state.mapVisible === true ? (
-            <div className={"fgpPopoverGraph"}>
-              <BasicMapFGP 
-
-              />
+          this.props.mapVisible === true ? (
+            
+            <div className={"w-100"}>
+            {
+              this.state.mapReady === true ? (
+                <BasicMapFGP 
+                  mapInteractions={this.props.mapInteractions}
+                  isBefore1910={this.props.isBefore1910}
+                  mapProjection={this.props.mapProjection}
+                  featuresParent={{
+                    deviceName: "",
+                    lat:  null ,
+                    lng : null
+                }}
+                featuresParentStyles={{
+                    label : "",
+                    borderColor : 'red',
+                    borderWidth : "1",
+                    fillColor : 'red',
+                }}
+                featuresChildren={this.state.mapData}
+                />
+              ) : (
+                <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>
+              )
+            }
+              
             </div>
           ) : ""
         }
-        <ReactTable 
-            showPagination={this.props.showPagination}
-            showPageSizeOptions={this.props.showPageSizeOptions}
-            showPageJump={this.props.showPageJump}
-            filterable={this.props.filterable}
-            data={this.buildData(this.props.data)}
-            columns={this.buildColumns(this.props.columns)}
-            minRows={this.props.defaultRowSize}
-            defaultPageSize={this.props.defaultPageSize ? this.props.defaultPageSize : 25}
-            pageSizeOptions={this.props.defaultRowSizeArray}
-            defaultFilterMethod={filterCaseInsensitive}
-            onPageChange={(pageSize,pageIndex) => {
-              console.log("pagesize = ", pageIndex, "pageindex = ", pageSize)
-              this.props.dynamicResultFunctionPage(pageIndex)
-            }}
-            onPageSizeChange={(pageSize,pageIndex) => {
-              console.log("pagesize = ", pageIndex, "pageindex = ", pageSize)
-              this.props.dynamicResultFunction(pageSize,pageIndex)
-            }}
-        />
+        <div style={{"display":"contents"}}>
+        {
+          this.state.dataReady === true && this.state.columnsReady ?  (
+            <ReactTable 
+                showPagination={this.props.showPagination}
+                showPageSizeOptions={this.props.showPageSizeOptions}
+                showPageJump={this.props.showPageJump}
+                filterable={this.props.filterable}
+                data={this.state.data}
+                columns={this.state.columns}
+                minRows={this.props.defaultRowSize}
+                defaultPageSize={this.props.defaultPageSize ? this.props.defaultPageSize : 25}
+                pageSizeOptions={this.props.defaultRowSizeArray}
+                defaultFilterMethod={filterCaseInsensitive}
+                // onPageChange={(pageSize,pageIndex) => {
+                //   console.log("pagesize = ", pageIndex, "pageindex = ", pageSize)
+                //   this.props.dynamicResultFunctionPage(pageIndex)
+                // }}
+                // onPageSizeChange={(pageSize,pageIndex) => {
+                //   console.log("pagesize = ", pageIndex, "pageindex = ", pageSize)
+                //   this.props.dynamicResultFunction(pageSize,pageIndex)
+                // }}
+            />
+          ) : (
+            <FontAwesomeIcon className="centerSpinner fa-spin" icon={["fas", "spinner"]}/>
+          )
+        }
+        </div>
       </div>
   )}
 }

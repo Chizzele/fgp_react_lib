@@ -102,7 +102,7 @@ React Library Guide </h1>
 
 ## Components
 The FGP Component Library comes out of box with many React components built to interact and utilise the Future Grid API and application to speed up front-end development time, these include the following.
-Navigation,
+<!-- Navigation,
 Map,
 View,
 GeoJSON,
@@ -144,7 +144,7 @@ StandardGraphV2,
 MultiTableFilterSearch,
 FilterSearchRow,
 MultiReferenceFilterSearch,
-DatePickerWrapper
+DatePickerWrapper -->
 
 <h4>Navigation</h4>
 *  [RouteWrap](#quick-start)
@@ -155,7 +155,7 @@ DatePickerWrapper
 *  [ExternalLinkPage](#components)
 <h4>Searches and Results</h4>
 *  [Search](#components)
-*  [ResultTable](#components)
+<!-- *  [ResultTable](#components) -->
 *  [ChildExtensionList](#quick-start)
 <h4>Graphs</h4>
 *  [StandardGraphV2](#components)

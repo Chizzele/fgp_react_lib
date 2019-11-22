@@ -169,7 +169,7 @@ export class BasicMapFGP extends Component {
               return styles[feature.getGeometry().getType()];
             };
             this.props.featuresChildren[x].children.forEach( child =>{
-              console.lof('plotting child', child)
+              console.log('plotting child', child)
               // console.log(child)
               let featureObj = {
                 'type' : "Feature",
@@ -506,7 +506,7 @@ export class BasicMapFGP extends Component {
         let resettingFeatures = [];
         // redirecting
         this.state.map.forEachFeatureAtPixel(event.pixel, feature => {    
-          window.location.href = `http://${window.location.host}/${feature.getProperties().type}/${feature.getProperties().name}`
+          window.open ( `http://${window.location.host}/${feature.getProperties().type}/${feature.getProperties().name}`, '_blank' )
         });
       }
     }
@@ -536,7 +536,7 @@ export class BasicMapFGP extends Component {
 
         return (
           <div className={"w-100 map fgpReactMap"} id={this.state.id}>
-            {this.state.noMapData === true ? <div className={"noMapData"}>No Location Data</div> : null}
+            {/* {this.state.noMapData === true ? <div className={"noMapData"}>No Location Data</div> : null} */}
             <MapPopup
               visibility={this.state.popupVisible}
               focusedFeatures={this.state.focusedFeatures}

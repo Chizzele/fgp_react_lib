@@ -1,4 +1,5 @@
 import axios from 'axios';
+import moment from 'moment';
 
 export class DataServiceV2{
     constructor(baseUrl){
@@ -12,6 +13,17 @@ export class DataServiceV2{
                 axios.get(url).then(resp=>{
                     console.log('I am resp', resp)
                     resp.id = ids[0]
+                    resolve([resp])
+                }).catch(err => {
+                    var resp = {
+                        first : {
+                            timestamp : moment().subtract(10, "days").startOf('day').valueOf()
+                        },
+                        end : {
+                            timestamp : moment().endOf('day').valueOf()
+                        },
+                        id : ids[0]
+                    }
                     resolve([resp])
                 })
             });

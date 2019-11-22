@@ -114,7 +114,12 @@ export class DeviceWidget extends Component {
                         :&nbsp;
                         <label className="fgReact_assetLabel">
                             {
-                                this.props.deviceName
+                                this.props.deviceNameAsMeterLookup !== false? (
+                                    this.props.deviceNameAsMeterLookup
+                                ) : (
+                                    this.props.deviceName    
+                                )
+                                
                             }
                         </label>
                         </div>
@@ -230,7 +235,15 @@ export class DeviceWidget extends Component {
                             this.caseString(this.props.deviceType, this.props.deviceTypeTitleCasing)
                         }   
                         :&nbsp;
-                        <label className="fgReact_assetLabel">{this.props.deviceName}</label>
+                        <label className="fgReact_assetLabel">
+                        {
+                            this.props.deviceNameAsMeterLookup !== false? (
+                                this.props.deviceNameAsMeterLookup
+                            ) : (
+                                this.props.deviceName    
+                            )
+                        }
+                        </label>
                         </div>
                         <div className={"col-3 text-right"}>
                             <button className={"btn btn-primary"} onClick={this.toggleVisibility.bind(this)}> Show Details</button>
